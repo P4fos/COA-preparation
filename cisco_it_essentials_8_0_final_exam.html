@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cisco IT Essentials 8.0 — Платформа подготовки к Final Exam</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    .flip-card { perspective: 1200px; }
+    .flip-card-inner {
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .flip-card-inner.flipped { transform: rotateY(180deg); }
+    .flip-card-front, .flip-card-back {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .flip-card-back { transform: rotateY(180deg); }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.4); }
+    ::-webkit-scrollbar-thumb { background: rgba(71, 85, 105, 0.7); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(100, 116, 139, 0.9); }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-30 bg-slate-900/95 backdrop-blur border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 font-extrabold text-white text-lg">
+          ITE8
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-bold text-base sm:text-lg text-white tracking-tight">Cisco IT Essentials 8.0 — Final Exam Prep</h1>
+            <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+              Modules 1–14 Full Bank
+            </span>
+          </div>
+          <p class="text-xs text-slate-400">Интерактивный тренажер, база вопросов с быстрым поиском (EN + RU) и симулятор экзамена NetAcad</p>
+        </div>
+      </div>
+
+      <!-- Language & Stats Controls -->
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="inline-flex rounded-lg bg-slate-800 p-1 border border-slate-700 text-xs font-medium" role="group">
+          <button id="langBtnBilingual" onclick="setLangMode('both')" class="px-2.5 py-1 rounded-md bg-cyan-600 text-white transition">EN + RU</button>
+          <button id="langBtnEn" onclick="setLangMode('en')" class="px-2.5 py-1 rounded-md text-slate-300 hover:text-white transition">EN (Оригинал)</button>
+          <button id="langBtnRu" onclick="setLangMode('ru')" class="px-2.5 py-1 rounded-md text-slate-300 hover:text-white transition">RU (Перевод)</button>
+        </div>
+        <div class="hidden md:flex items-center gap-2 bg-slate-800/80 border border-slate-700/80 px-3 py-1.5 rounded-lg text-xs">
+          <span class="text-slate-400">Изучено:</span>
+          <span id="headerMasteredCount" class="font-bold text-emerald-400">0 / 100</span>
+          <span class="text-slate-600">|</span>
+          <span class="text-slate-400">Избранное:</span>
+          <span id="headerBookmarkedCount" class="font-bold text-amber-400">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN TABS -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex overflow-x-auto border-t border-slate-800/80 gap-1 pt-1">
+      <button id="tabBtnBank" onclick="switchTab('bank')" class="px-4 py-2.5 text-xs sm:text-sm font-semibold border-b-2 border-cyan-400 text-cyan-300 whitespace-nowrap flex items-center gap-2 transition">
+        <span>📚 База всех вопросов (100)</span>
+      </button>
+      <button id="tabBtnExam" onclick="switchTab('exam')" class="px-4 py-2.5 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap flex items-center gap-2 transition">
+        <span>🎯 Симулятор Final Exam</span>
+      </button>
+      <button id="tabBtnFlashcards" onclick="switchTab('flashcards')" class="px-4 py-2.5 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap flex items-center gap-2 transition">
+        <span>🃏 Флеш-карточки</span>
+      </button>
+      <button id="tabBtnCheatsheet" onclick="switchTab('cheatsheet')" class="px-4 py-2.5 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap flex items-center gap-2 transition">
+        <span>⚡ Шпаргалка & Аналитика</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
+
+    <!-- ==================== TAB 1: QUESTION BANK ==================== -->
+    <section id="viewBank" class="space-y-5">
+      <!-- Top Filter & Search Bar -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xl space-y-4">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3">
+          <!-- Instant Search Input -->
+          <div class="lg:col-span-5 relative">
+            <input
+              id="bankSearchInput"
+              type="text"
+              oninput="renderBank()"
+              placeholder="🔍 Быстрый поиск по вопросу или ответу (на EN или RU)..."
+              class="w-full bg-slate-950 border border-slate-700 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition"
+            />
+            <button onclick="clearBankSearch()" class="absolute right-3 top-2.5 text-xs text-slate-400 hover:text-white px-1.5 py-0.5 bg-slate-800 rounded">
+              Сброс
+            </button>
+          </div>
+
+          <!-- Module Filter -->
+          <div class="lg:col-span-3">
+            <select id="bankModuleFilter" onchange="renderBank()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-200 outline-none focus:border-cyan-500">
+              <option value="ALL">Все модули (Modules 1–14)</option>
+              <option value="M1–M4">Модули 1–4: Железо ПК, BIOS, RAID, Сборка, Устранение неполадок</option>
+              <option value="M5–M6">Модули 5–6: Сети, TCP/UDP, DHCP, IPv4/IPv6, Firewall</option>
+              <option value="M7–M8">Модули 7–8: Ноутбуки, Мобильные устройства, Принтеры</option>
+              <option value="M9">Модуль 9: Виртуализация (Type 1/2) и Облака (IaaS/PaaS/SaaS)</option>
+              <option value="M10–M11">Модули 10–11: Установка и настройка Windows, CLI, Диски</option>
+              <option value="M12">Модуль 12: Мобильные ОС (iOS/Android), Linux и macOS</option>
+              <option value="M13">Модуль 13: Информационная безопасность (Security)</option>
+              <option value="M14">Модуль 14: ИТ-специалист, SLA, Этика и Криминалистика</option>
+            </select>
+          </div>
+
+          <!-- Pool Filter -->
+          <div class="lg:col-span-2">
+            <select id="bankPoolFilter" onchange="renderBank()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-200 outline-none focus:border-cyan-500">
+              <option value="ALL">Все экзамены</option>
+              <option value="Composite 1–14">Course Final (1–14)</option>
+              <option value="Final 1–9">Final Exam 1–9</option>
+              <option value="Final 10–14">Final Exam 10–14</option>
+            </select>
+          </div>
+
+          <!-- Status Filter -->
+          <div class="lg:col-span-2">
+            <select id="bankStatusFilter" onchange="renderBank()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-200 outline-none focus:border-cyan-500">
+              <option value="ALL">Любой статус</option>
+              <option value="BOOKMARKED">★ В избранном</option>
+              <option value="MASTERED">✓ Изученные</option>
+              <option value="UNMASTERED">○ Не изученные</option>
+              <option value="MISTAKES">✕ Ошибки в тестах</option>
+              <option value="MULTI">☑ Несколько ответов (Choose 2/3)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Mode & Summary Row -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-800/80 text-xs sm:text-sm">
+          <div class="flex items-center gap-2">
+            <span class="text-slate-400">Найдено вопросов:</span>
+            <span id="bankResultCount" class="font-bold text-cyan-400">100</span>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-slate-400 text-xs">Режим отображения:</span>
+            <button id="bankModeShowBtn" onclick="setBankDisplayMode('show')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white transition">
+              👁 Показать все ответы (Шпаргалка)
+            </button>
+            <button id="bankModeQuizBtn" onclick="setBankDisplayMode('interactive')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white border border-slate-700 transition">
+              ✍️ Скрыть ответы (Самопроверка)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question Cards Container -->
+      <div id="bankQuestionsContainer" class="space-y-4"></div>
+    </section>
+
+    <!-- ==================== TAB 2: EXAM SIMULATOR ==================== -->
+    <section id="viewExam" class="hidden space-y-6">
+      <!-- Exam Setup Screen -->
+      <div id="examSetupPanel" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+          <div>
+            <h2 class="text-xl font-bold text-white">🎯 Симулятор экзаменов Cisco NetAcad IT Essentials 8.0</h2>
+            <p class="text-sm text-slate-400 mt-1">Выберите формат экзамена (с таймером и проходным баллом 70%, как в оригинальном курсе NetAcad)</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <label class="flex items-center gap-2 text-xs sm:text-sm text-slate-300 bg-slate-800/90 px-3.5 py-2 rounded-xl border border-slate-700 cursor-pointer">
+              <input id="examInstantFeedbackToggle" type="checkbox" checked class="rounded text-cyan-500 focus:ring-0" />
+              <span>Показывать правильный ответ сразу после нажатия Submit</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Mode 1: Composite Final Exam -->
+          <div class="bg-slate-950 border border-slate-800 hover:border-cyan-500/60 rounded-2xl p-5 flex flex-col justify-between transition">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">Главный экзамен</span>
+                <span class="text-xs text-slate-400">⏱ 75 мин • Проходной 70%</span>
+              </div>
+              <h3 class="text-base font-bold text-white">IT Essentials Course Final Exam (Modules 1–14)</h3>
+              <p class="text-xs text-slate-400 mt-2">Полная симуляция итогового экзамена по всем 14 модулям курса (60 случайных вопросов из всех разделов).</p>
+            </div>
+            <button onclick="startExamSession('composite60')" class="mt-5 w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-sm shadow-lg shadow-cyan-500/20 transition">
+              Запустить Course Final (60 вопр.)
+            </button>
+          </div>
+
+          <!-- Mode 2: Final Exam Modules 1-9 -->
+          <div class="bg-slate-950 border border-slate-800 hover:border-blue-500/60 rounded-2xl p-5 flex flex-col justify-between transition">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/15 text-blue-300 border border-blue-500/30">Модули 1–9</span>
+                <span class="text-xs text-slate-400">⏱ 60 мин • Проходной 70%</span>
+              </div>
+              <h3 class="text-base font-bold text-white">Final Exam Modules 1–9</h3>
+              <p class="text-xs text-slate-400 mt-2">Аппаратное обеспечение ПК, сборка, BIOS/RAID, сети, ноутбуки, принтеры, виртуализация и облака.</p>
+            </div>
+            <button onclick="startExamSession('final1_9')" class="mt-5 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-blue-600 text-white font-semibold text-sm border border-slate-700 transition">
+              Запустить Final 1–9 (50 вопр.)
+            </button>
+          </div>
+
+          <!-- Mode 3: Final Exam Modules 10-14 -->
+          <div class="bg-slate-950 border border-slate-800 hover:border-indigo-500/60 rounded-2xl p-5 flex flex-col justify-between transition">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">Модули 10–14</span>
+                <span class="text-xs text-slate-400">⏱ 60 мин • Проходной 70%</span>
+              </div>
+              <h3 class="text-base font-bold text-white">Final Exam Modules 10–14</h3>
+              <p class="text-xs text-slate-400 mt-2">Установка и настройка Windows, командная строка, Linux/macOS/iOS/Android, безопасность и этика ИТ.</p>
+            </div>
+            <button onclick="startExamSession('final10_14')" class="mt-5 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-indigo-600 text-white font-semibold text-sm border border-slate-700 transition">
+              Запустить Final 10–14 (45 вопр.)
+            </button>
+          </div>
+
+          <!-- Mode 4: Full 100 Marathon -->
+          <div class="bg-slate-950 border border-slate-800 hover:border-emerald-500/60 rounded-2xl p-5 flex flex-col justify-between transition">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Полный марафон</span>
+                <span class="text-xs text-slate-400">⏱ 120 мин • 100 вопросов</span>
+              </div>
+              <h3 class="text-base font-bold text-white">Все 100 вопросов курса подряд</h3>
+              <p class="text-xs text-slate-400 mt-2">Пройти абсолютно все 100 вопросов базы от 1-го до 14-го модуля для 100% готовности к любому варианту.</p>
+            </div>
+            <button onclick="startExamSession('all100')" class="mt-5 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-emerald-600 text-white font-semibold text-sm border border-slate-700 transition">
+              Запустить марафон (100 вопр.)
+            </button>
+          </div>
+
+          <!-- Mode 5: Quick Sprint 15 -->
+          <div class="bg-slate-950 border border-slate-800 hover:border-amber-500/60 rounded-2xl p-5 flex flex-col justify-between transition">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30">Экспресс-тест</span>
+                <span class="text-xs text-slate-400">⏱ 20 мин • 15 вопросов</span>
+              </div>
+              <h3 class="text-base font-bold text-white">Быстрый спринт (15 вопросов)</h3>
+              <p class="text-xs text-slate-400 mt-2">Короткая тренировка из 15 случайных вопросов со всех модулей для быстрой разминки перед экзаменом.</p>
+            </div>
+            <button onclick="startExamSession('sprint15')" class="mt-5 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-amber-600 text-white font-semibold text-sm border border-slate-700 transition">
+              Запустить спринт (15 вопр.)
+            </button>
+          </div>
+
+          <!-- Mode 6: Mistakes & Bookmarks -->
+          <div class="bg-slate-950 border border-slate-800 hover:border-rose-500/60 rounded-2xl p-5 flex flex-col justify-between transition">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/15 text-rose-300 border border-rose-500/30">Персональный</span>
+                <span class="text-xs text-slate-400">Без лимита • Сложные темы</span>
+              </div>
+              <h3 class="text-base font-bold text-white">Ошибки, Избранное и Multi-Select</h3>
+              <p class="text-xs text-slate-400 mt-2">Отработка вопросов из избранного, прошлых ошибок или сложных вопросов с выбором 2–3 ответов.</p>
+            </div>
+            <button onclick="startExamSession('mistakes')" class="mt-5 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-rose-600 text-white font-semibold text-sm border border-slate-700 transition">
+              Отработать сложные вопросы
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Exam Runner -->
+      <div id="examActivePanel" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Main Question Area -->
+        <div class="lg:col-span-8 bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl flex flex-col justify-between space-y-6">
+          <div class="space-y-4">
+            <!-- Top Bar inside Runner -->
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-4">
+              <div class="flex items-center gap-2">
+                <span id="examRunnerBadge" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Question 1 of 60</span>
+                <span id="examRunnerModuleTag" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800 text-slate-300">M1–M4</span>
+                <span id="examRunnerMultiTag" class="hidden px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">Выберите несколько ответов</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="flex items-center gap-1.5 bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-xl text-xs font-mono text-cyan-300">
+                  <span>⏱</span>
+                  <span id="examTimerDisplay">75:00</span>
+                </div>
+                <button id="examBookmarkCurrentBtn" onclick="toggleBookmarkCurrentExamQ()" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition">
+                  ★ В избранное
+                </button>
+              </div>
+            </div>
+
+            <!-- Question Text -->
+            <div id="examQuestionStem" class="space-y-2 text-base sm:text-lg font-semibold text-white leading-relaxed"></div>
+
+            <!-- Options List -->
+            <div id="examOptionsList" class="space-y-2.5 pt-2"></div>
+
+            <!-- Instant Explanation Box -->
+            <div id="examFeedbackBox" class="hidden rounded-xl p-4 border text-sm space-y-1"></div>
+          </div>
+
+          <!-- Bottom Navigation Controls -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-800">
+            <button onclick="prevExamQuestion()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold transition">
+              ← Назад
+            </button>
+            <div class="flex items-center gap-2">
+              <button id="examSubmitAnswerBtn" onclick="submitCurrentExamQuestion()" class="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-semibold shadow-lg shadow-cyan-600/20 transition">
+                Submit (Проверить ответ)
+              </button>
+              <button onclick="nextExamQuestion()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold transition">
+                Далее →
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question Palette Sidebar -->
+        <div class="lg:col-span-4 bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between space-y-5">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <h3 class="font-bold text-sm text-white">Карта вопросов</h3>
+              <span id="examAnsweredCounter" class="text-xs text-slate-400">Отвечено: 0 / 60</span>
+            </div>
+            <div id="examPaletteGrid" class="grid grid-cols-6 sm:grid-cols-8 lg:grid-cols-6 gap-1.5 max-h-80 overflow-y-auto pr-1"></div>
+          </div>
+
+          <div class="space-y-2.5 pt-4 border-t border-slate-800">
+            <button onclick="finishExamSession()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-lg shadow-emerald-600/20 transition">
+              ✓ Завершить и рассчитать балл
+            </button>
+            <button onclick="quitExamToSetup()" class="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition">
+              Выйти к выбору режима
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Exam Results Screen -->
+      <div id="examResultPanel" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+          <div>
+            <span id="examResultStatusBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              PASSED • ЭКЗАМЕН СДАН
+            </span>
+            <h2 id="examResultTitle" class="text-2xl font-extrabold text-white mt-2">Результат: 95% (57 / 60)</h2>
+            <p id="examResultSubtitle" class="text-sm text-slate-400 mt-1">Поздравляем! Вы успешно преодолели проходной порог 70% курса Cisco IT Essentials 8.0.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="retryWrongExamQuestions()" id="examRetryWrongBtn" class="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-sm transition">
+              🔁 Пройти только ошибки
+            </button>
+            <button onclick="quitExamToSetup()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm border border-slate-700 transition">
+              Новый экзамен
+            </button>
+          </div>
+        </div>
+
+        <!-- Review List -->
+        <div id="examReviewContainer" class="space-y-4"></div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: FLASHCARDS ==================== -->
+    <section id="viewFlashcards" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-wrap items-center justify-between gap-4">
+        <div class="flex flex-wrap items-center gap-3">
+          <h2 class="font-bold text-white text-base">🃏 Флеш-карточки для быстрого запоминания</h2>
+          <select id="fcModuleFilter" onchange="filterFlashcards()" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-200 outline-none">
+            <option value="ALL">Все модули (100 карточек)</option>
+            <option value="M1–M4">Модули 1–4: Железо ПК, BIOS, RAID, Сборка</option>
+            <option value="M5–M6">Модули 5–6: Сети, Протоколы, IPv4/IPv6</option>
+            <option value="M7–M8">Модули 7–8: Ноутбуки и Принтеры</option>
+            <option value="M9">Модуль 9: Виртуализация и Облака</option>
+            <option value="M10–M11">Модули 10–11: Установка и настройка Windows</option>
+            <option value="M12">Модуль 12: Мобильные ОС, Linux и macOS</option>
+            <option value="M13">Модуль 13: Безопасность (Security)</option>
+            <option value="M14">Модуль 14: ИТ-профессионал и Этика</option>
+          </select>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="shuffleFlashcards()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition">
+            🔀 Перемешать
+          </button>
+          <span id="fcCounterText" class="text-xs font-bold text-cyan-400 px-2">1 / 100</span>
+        </div>
+      </div>
+
+      <!-- 3D Flip Card -->
+      <div class="max-w-3xl mx-auto">
+        <div onclick="flipCurrentCard()" class="flip-card cursor-pointer select-none">
+          <div id="fcInner" class="flip-card-inner relative min-h-[340px] sm:min-h-[380px]">
+            <!-- Front -->
+            <div class="flip-card-front absolute inset-0 bg-gradient-to-br from-slate-900 to-slate-950 border-2 border-slate-800 hover:border-cyan-500/50 rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-2xl">
+              <div class="flex items-center justify-between text-xs text-slate-400">
+                <span id="fcFrontModule" class="px-2.5 py-1 rounded-full bg-slate-800 text-cyan-300 font-semibold">M1–M4</span>
+                <span>Нажмите на карточку, чтобы перевернуть ↻</span>
+              </div>
+              <div id="fcFrontText" class="my-auto py-4 text-center space-y-3"></div>
+              <div class="text-center text-xs text-slate-500">Вопрос из официального пула Final Exam</div>
+            </div>
+
+            <!-- Back -->
+            <div class="flip-card-back absolute inset-0 bg-gradient-to-br from-slate-900 via-emerald-950/30 to-slate-950 border-2 border-emerald-500/50 rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-2xl">
+              <div class="flex items-center justify-between text-xs text-emerald-300">
+                <span class="px-2.5 py-1 rounded-full bg-emerald-500/20 font-bold">✓ Правильный ответ</span>
+                <span>Нажмите, чтобы вернуться к вопросу ↺</span>
+              </div>
+              <div id="fcBackText" class="my-auto py-4 text-center space-y-3"></div>
+              <div id="fcBackExp" class="text-xs text-slate-300 bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-center"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Flashcard Controls -->
+        <div class="flex flex-wrap items-center justify-center gap-3 mt-6">
+          <button onclick="prevFlashcard()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm font-semibold text-slate-200 transition">
+            ← Предыдущая
+          </button>
+          <button onclick="flipCurrentCard()" class="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-sm font-semibold text-white transition">
+            Перевернуть карточку
+          </button>
+          <button onclick="markFlashcardMastered()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-sm font-semibold text-white transition">
+            ✓ Знаю отлично
+          </button>
+          <button onclick="nextFlashcard()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm font-semibold text-slate-200 transition">
+            Следующая →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: CHEAT SHEET & ANALYTICS ==================== -->
+    <section id="viewCheatsheet" class="hidden space-y-6">
+      <!-- Module Readiness Progress -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-lg font-bold text-white">📊 Прогресс освоения по модулям курса (Modules 1–14)</h2>
+            <p class="text-xs text-slate-400">Отмечайте вопросы кнопкой «✓ Изучено» в базе или решайте их в симуляторе экзамена</p>
+          </div>
+          <button onclick="resetAllProgress()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-rose-600/80 text-xs text-slate-300 hover:text-white border border-slate-700 transition">
+            Сбросить прогресс
+          </button>
+        </div>
+        <div id="analyticsModuleGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 pt-2"></div>
+      </div>
+
+      <!-- High-Yield Reference Tables -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Table 1: Key Ports -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
+          <h3 class="font-bold text-white text-base flex items-center gap-2">
+            <span class="text-cyan-400">🌐</span> Главные сетевые порты (Модули 5–6)
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400">
+                  <th class="py-2 pr-3">Порт</th>
+                  <th class="py-2 pr-3">Протокол</th>
+                  <th class="py-2">Назначение на экзамене</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800/70 text-slate-200">
+                <tr><td class="py-2 font-mono text-cyan-300">20 / 21</td><td class="font-semibold">FTP (TCP)</td><td>Передача файлов (20 — данные, 21 — управление)</td></tr>
+                <tr><td class="py-2 font-mono text-cyan-300">22</td><td class="font-semibold">SSH (TCP)</td><td>Зашифрованный удаленный доступ к CLI (замена Telnet)</td></tr>
+                <tr><td class="py-2 font-mono text-cyan-300">23</td><td class="font-semibold">Telnet (TCP)</td><td>Незашифрованный текстовый удаленный доступ (открытый текст)</td></tr>
+                <tr><td class="py-2 font-mono text-cyan-300">25</td><td class="font-semibold">SMTP (TCP)</td><td>Отправка электронной почты от клиента к серверу и между серверами</td></tr>
+                <tr><td class="py-2 font-mono text-cyan-300">53</td><td class="font-semibold">DNS (UDP/TCP)</td><td>Преобразование доменных имен в IP-адреса</td></tr>
+                <tr><td class="py-2 font-mono text-cyan-300">67 / 68</td><td class="font-semibold">DHCP (UDP)</td><td>Динамическая выдача IP-адресов (67 — сервер, 68 — клиент)</td></tr>
+                <tr><td class="py-2 font-mono text-cyan-300">80 / 443</td><td class="font-semibold">HTTP / HTTPS</td><td>Веб-трафик (80 — открытый HTTP, 443 — защищенный SSL/TLS HTTPS)</td></tr>
+                <tr><td class="py-2 font-mono text-cyan-300">110 / 143</td><td class="font-semibold">POP3 / IMAP</td><td>Получение почты (POP3 скачивает, IMAP синхронизирует папки на сервере)</td></tr>
+                <tr><td class="py-2 font-mono text-cyan-300">137–139 / 445</td><td class="font-semibold">NetBIOS / SMB</td><td>Общий доступ к файлам и принтерам в сетях Windows</td></tr>
+                <tr><td class="py-2 font-mono text-cyan-300">3389</td><td class="font-semibold">RDP (TCP/UDP)</td><td>Удаленный рабочий стол Windows (Remote Desktop Protocol)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Table 2: RAID & Storage -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
+          <h3 class="font-bold text-white text-base flex items-center gap-2">
+            <span class="text-emerald-400">💾</span> Уровни RAID и стандарты дисков (Модули 3 и 10)
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400">
+                  <th class="py-2 pr-3">Тип</th>
+                  <th class="py-2 pr-3">Мин. дисков</th>
+                  <th class="py-2">Ключевая особенность для Final Exam</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800/70 text-slate-200">
+                <tr><td class="py-2 font-bold text-emerald-300">RAID 0</td><td>2 диска</td><td>Только чередование (Striping). Высокая скорость, НЕТ отказоустойчивости.</td></tr>
+                <tr><td class="py-2 font-bold text-emerald-300">RAID 1</td><td>2 диска</td><td>Зеркалирование (Mirroring). Отказоустойчивость, полезный объем = 50%.</td></tr>
+                <tr><td class="py-2 font-bold text-emerald-300">RAID 5</td><td>3 диска</td><td>Чередование с распределенной четностью (Parity). Выдерживает выход из строя 1 диска.</td></tr>
+                <tr><td class="py-2 font-bold text-emerald-300">RAID 10 (1+0)</td><td>4 диска</td><td>Зеркалирование + чередование. Высокая скорость и надежность.</td></tr>
+                <tr><td class="py-2 font-bold text-cyan-300">MBR</td><td>До 2 ТБ</td><td>Максимум 4 основных (primary) раздела (или 3 primary + 1 extended), 1 активный раздел.</td></tr>
+                <tr><td class="py-2 font-bold text-cyan-300">GPT (UEFI)</td><td>До 9.4 ЗБ</td><td>До 128 основных разделов в Windows, не требует extended/logical разделов.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Table 3: Windows & Linux CLI Commands -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
+          <h3 class="font-bold text-white text-base flex items-center gap-2">
+            <span class="text-amber-400">💻</span> Команды Windows и Linux (Модули 11–12)
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400">
+                  <th class="py-2 pr-3">Команда</th>
+                  <th class="py-2 pr-3">ОС</th>
+                  <th class="py-2">Что делает (частые вопросы на экзамене)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800/70 text-slate-200">
+                <tr><td class="py-2 font-mono text-amber-300">sfc /scannow</td><td>Windows</td><td>Проверяет и восстанавливает поврежденные системные файлы Windows</td></tr>
+                <tr><td class="py-2 font-mono text-amber-300">chkdsk /f /r</td><td>Windows</td><td>Проверяет файловую систему и физические сбойные сектора диска</td></tr>
+                <tr><td class="py-2 font-mono text-amber-300">bootrec /fixmbr</td><td>WinRE</td><td>Восстанавливает поврежденную запись Master Boot Record (MBR)</td></tr>
+                <tr><td class="py-2 font-mono text-amber-300">regsvr32</td><td>Windows</td><td>Регистрирует или отменяет регистрацию файлов .dll и элементов ActiveX</td></tr>
+                <tr><td class="py-2 font-mono text-amber-300">gpupdate /force</td><td>Windows</td><td>Немедленно применяет измененные политики Group Policy</td></tr>
+                <tr><td class="py-2 font-mono text-amber-300">robocopy</td><td>Windows</td><td>Копирует файлы и полные деревья каталогов между томами</td></tr>
+                <tr><td class="py-2 font-mono text-amber-300">type</td><td>Windows</td><td>Выводит текстовое содержимое файла в командной строке</td></tr>
+                <tr><td class="py-2 font-mono text-amber-300">taskkill / net user</td><td>Windows</td><td>Завершает зависший процесс / Управляет учетными записями пользователей</td></tr>
+                <tr><td class="py-2 font-mono text-purple-300">chmod / chown</td><td>Linux</td><td>Изменяет права доступа (rwx) / меняет владельца файла или папки</td></tr>
+                <tr><td class="py-2 font-mono text-purple-300">grep / ls -l / pwd</td><td>Linux</td><td>Поиск текста в файлах / подробный список файлов с правами / текущая папка</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Table 4: 6 Troubleshooting Steps & 7 Laser Printing Steps -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+          <div>
+            <h3 class="font-bold text-white text-base flex items-center gap-2 mb-2">
+              <span class="text-rose-400">🔧</span> 6 шагов устранения неполадок (Модуль 4)
+            </h3>
+            <ol class="list-decimal list-inside text-xs text-slate-200 space-y-1 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+              <li><strong class="text-white">Identify the problem</strong> — Определить проблему (опросить пользователя, проверить бэкап).</li>
+              <li><strong class="text-white">Establish a theory of probable cause</strong> — Выдвинуть теорию вероятной причины (начиная с очевидного).</li>
+              <li><strong class="text-white">Test the theory to determine the cause</strong> — Проверить теорию для установления точной причины.</li>
+              <li><strong class="text-white">Establish a plan of action and implement the solution</strong> — Составить план действий и устранить проблему.</li>
+              <li><strong class="text-white">Verify full system functionality and implement preventive measures</strong> — Проверить работу системы и меры профилактики.</li>
+              <li><strong class="text-white">Document findings, actions, and outcomes</strong> — Задокументировать выводы, действия и результат.</li>
+            </ol>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-white text-base flex items-center gap-2 mb-2">
+              <span class="text-blue-400">🖨</span> 7 этапов лазерной печати (Модуль 8)
+            </h3>
+            <ol class="list-decimal list-inside text-xs text-slate-200 space-y-1 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+              <li><strong class="text-white">Processing (Обработка)</strong> — перевод данных на язык страницы и буферизация в RAM.</li>
+              <li><strong class="text-white">Charging (Зарядка)</strong> — фотобарабан получает равномерный заряд (~ -600 В) от первичного коронатора.</li>
+              <li><strong class="text-white">Exposing (Экспонирование)</strong> — лазер рисует скрытое изображение на барабане (снижая заряд до ~ -100 В).</li>
+              <li><strong class="text-white">Developing (Проявление)</strong> — частицы тонера притягиваются к освещенным лазером участкам барабана.</li>
+              <li><strong class="text-white">Transferring (Перенос)</strong> — ролик переноса (вторичный коронатор) притягивает тонер с барабана на бумагу.</li>
+              <li><strong class="text-white">Fusing (Закрепление)</strong> — термоузел (печка) расплавляет и впрессовывает тонер в бумагу под температурой и давлением.</li>
+              <li><strong class="text-white">Cleaning (Очистка)</strong> — удаление остатков тонера с фотобарабана перед новым циклом.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const QUESTIONS = [{"id": 1, "module": "M1–M4", "moduleNum": 2, "pool": "Composite 1–14", "multi": false, "q_en": "In which situation would an ESD strike potentially cause harm to the PC?", "q_ru": "В какой ситуации электростатический разряд (ESD) может потенциально повредить ПК?", "opts_en": ["when installing RAM", "when installing an additional display in a workplace cubicle", "when replacing high voltage laser printer parts", "while attaching speakers to a surround sound card", "when installing a UPS"], "opts_ru": ["при установке оперативной памяти (RAM)", "при установке дополнительного монитора на рабочем месте", "при замене высоковольтных деталей лазерного принтера", "при подключении колонок к звуковой карте", "при установке ИБП (UPS)"], "ans": [0], "exp": "Полупроводниковые микросхемы (RAM, CPU, материнская плата) крайне чувствительны к статическому электричеству (ESD) при прямом контакте."}, {"id": 2, "module": "M1–M4", "moduleNum": 2, "pool": "Composite 1–14", "multi": false, "q_en": "A person has started a new technical job. In which situation would ESD be an issue?", "q_ru": "Человек приступил к новой работе техспециалистом. В какой ситуации ESD станет проблемой?", "opts_en": ["when installing a processor", "when using a grounded mat and working on a computer on an ungrounded workbench", "when installing a dual-voltage power supply", "while exchanging one laptop AC adapter with one that is not from the OEM"], "opts_ru": ["при установке процессора (CPU)", "при использовании заземленного коврика на незаземленном верстаке", "при установке блока питания с переключением напряжения", "при замене адаптера питания ноутбука на неоригинальный"], "ans": [0], "exp": "Процессор (CPU) содержит миллионы транзисторов и может быть мгновенно выведен из строя электростатическим разрядом при установке без антистатического браслета."}, {"id": 3, "module": "M1–M4", "moduleNum": 4, "pool": "Composite 1–14", "multi": false, "q_en": "A technician is about to begin preventive maintenance on a company PC. In which situation would ESD be an issue?", "q_ru": "Техник собирается начать профилактическое обслуживание ПК. В какой ситуации ESD будет представлять опасность?", "opts_en": ["when replacing a motherboard", "while attaching speakers to a surround sound card", "when using a grounded mat and working on a computer on an ungrounded workbench", "when installing a dual-voltage power supply"], "opts_ru": ["при замене материнской платы", "при подключении внешних аудиоколонок", "при работе на заземленном антистатическом коврике", "при установке блока питания с двойным напряжением"], "ans": [0], "exp": "При замене материнской платы техник напрямую касается открытых дорожек и чипов, поэтому защита от ESD обязательна."}, {"id": 4, "module": "M1–M4", "moduleNum": 2, "pool": "Composite 1–14", "multi": false, "q_en": "An instructor has given a student an assignment to assemble a PC. In which situation should the student be aware that ESD is an issue?", "q_ru": "Преподаватель поручил студенту собрать ПК. В какой ситуации студенту следует помнить об угрозе ESD?", "opts_en": ["when replacing a mechanical hard drive with an M.2 SSD", "when walking across a carpeted area and then touching a keyboard attached to a tower PC", "when installing a UPS", "when working in a corporate environment that has carpet installed under tower PCs"], "opts_ru": ["при замене механического жесткого диска на накопитель M.2 SSD", "при прикосновении к внешней клавиатуре после прохода по ковру", "при подключении внешнего источника бесперебойного питания (UPS)", "при обычной работе в офисе с ковровым покрытием"], "ans": [0], "exp": "Плата накопителя M.2 SSD имеет открытые микросхемы флеш-памяти и контроллер, которые легко повредить статическим разрядом при монтаже на материнскую плату."}, {"id": 5, "module": "M1–M4", "moduleNum": 3, "pool": "Composite 1–14", "multi": true, "q_en": "What two motherboard components control the system boot operations? (Choose two.)", "q_ru": "Какие два компонента материнской платы управляют операциями начальной загрузки системы? (Выберите два ответа.)", "opts_en": ["BIOS chip", "UEFI chip", "Northbridge chip", "Southbridge chip", "CPU"], "opts_ru": ["Чип BIOS", "Чип UEFI", "Чип северного моста (Northbridge)", "Чип южного моста (Southbridge)", "Центральный процессор (CPU)"], "ans": [0, 1], "exp": "Прошивка BIOS или UEFI хранится в соответствующих микросхемах на материнской плате и отвечает за POST и начальную загрузку системы."}, {"id": 6, "module": "M1–M4", "moduleNum": 3, "pool": "Composite 1–14", "multi": false, "q_en": "A technician is upgrading an ATX motherboard with another ATX motherboard. Which component might be affected by this and need to be upgraded and bought as an additional purchase?", "q_ru": "Техник меняет материнскую плату ATX на другую плату ATX. Какой компонент может потребовать замены и отдельной покупки?", "opts_en": ["CPU", "BIOS", "chipset", "CMOS battery", "PCIe adapter"], "opts_ru": ["Центральный процессор (CPU)", "Микросхема BIOS", "Чипсет", "Батарейка CMOS", "Адаптер PCIe"], "ans": [0], "exp": "Новая материнская плата может иметь другой сокет и чипсет, поэтому старый процессор (CPU) может оказаться несовместимым."}, {"id": 7, "module": "M1–M4", "moduleNum": 1, "pool": "Composite 1–14", "multi": false, "q_en": "A customer has requested that a PC be built that will support eSATA. Which component should be checked to be sure that this feature is supported?", "q_ru": "Клиент попросил собрать ПК с поддержкой eSATA. Какой компонент необходимо проверить, чтобы убедиться в поддержке этой функции?", "opts_en": ["chipset", "CPU", "hard disk", "RAM module"], "opts_ru": ["Чипсет материнской платы (chipset)", "Процессор (CPU)", "Жесткий диск", "Модуль оперативной памяти (RAM)"], "ans": [0], "exp": "Поддержка интерфейсов ввода-вывода и накопителей (включая SATA/eSATA и USB) определяется чипсетом (в частности, Южным мостом / PCH) материнской платы."}, {"id": 8, "module": "M1–M4", "moduleNum": 1, "pool": "Composite 1–14", "multi": false, "q_en": "Which memory module used to hold instructions for booting a PC and loading the OS, but is still used on adapters even though the memory contents cannot be changed?", "q_ru": "Какой тип памяти использовался для хранения инструкций загрузки ПК и ОС, и до сих пор применяется на платах адаптеров, хотя его содержимое нельзя изменить?", "opts_en": ["ROM", "RAM", "cache", "main memory"], "opts_ru": ["ПЗУ (ROM — Read-Only Memory)", "ОЗУ (RAM)", "Кэш-память (cache)", "Основная память"], "ans": [0], "exp": "ROM (Read-Only Memory) — энергонезависимая память только для чтения, сохраняющая базовые инструкции прошивки."}, {"id": 9, "module": "M1–M4", "moduleNum": 1, "pool": "Final 1–9", "multi": false, "q_en": "What is a characteristic of DDR SDRAM?", "q_ru": "Какова характеристика памяти DDR SDRAM?", "opts_en": ["It transfers data twice per clock cycle compared to once per clock cycle for SDRAM.", "DDR SDRAM modules have double the number of pins of SDRAM memory modules.", "It is dynamic memory whereas SDRAM is static memory.", "It operates at double the voltage of SDRAM memory."], "opts_ru": ["Она передает данные дважды за один такт по сравнению с одним разом за такт у SDRAM.", "Модули DDR SDRAM имеют вдвое больше контактов, чем SDRAM.", "Это динамическая память, тогда как SDRAM — статическая.", "Она работает при удвоенном напряжении по сравнению с SDRAM."], "ans": [0], "exp": "Double Data Rate (DDR) передает данные как по переднему, так и по заднему фронту тактового импульса (дважды за такт)."}, {"id": 10, "module": "M1–M4", "moduleNum": 2, "pool": "Composite 1–14", "multi": false, "q_en": "Which component requires a technician to install screws externally through the PC case?", "q_ru": "Какой компонент требует от техника вкручивания винтов снаружи через корпус ПК?", "opts_en": ["power supply", "RAM", "CPU", "motherboard"], "opts_ru": ["Блок питания (power supply)", "Оперативная память (RAM)", "Процессор (CPU)", "Материнская плата"], "ans": [0], "exp": "Блок питания (PSU) крепится четырьмя винтами с внешней задней стороны корпуса системного блока."}, {"id": 11, "module": "M1–M4", "moduleNum": 2, "pool": "Composite 1–14", "multi": false, "q_en": "A technician is installing an internal HDD. To which motherboard connector will the technician connect the data cable?", "q_ru": "Техник устанавливает внутренний жесткий диск (HDD). К какому разъему на материнской плате он подключит кабель передачи данных?", "opts_en": ["SATA", "ATX", "PCI", "PWR_SW"], "opts_ru": ["SATA", "ATX", "PCI", "PWR_SW"], "ans": [0], "exp": "Внутренние накопители HDD/SSD подключаются информационным кабелем к 7-контактному разъему SATA на материнской плате."}, {"id": 12, "module": "M1–M4", "moduleNum": 2, "pool": "Final 1–9", "multi": false, "q_en": "When a PC is being assembled, what component is connected to the motherboard with a SATA cable?", "q_ru": "Какой компонент при сборке ПК подключается к материнской плате кабелем SATA?", "opts_en": ["the optical drive", "the network interface card", "the video card", "the power supply"], "opts_ru": ["Оптический привод (optical drive)", "Сетевая карта (NIC)", "Видеокарта", "Блок питания"], "ans": [0], "exp": "Оптические приводы (DVD/Blu-ray), как и жесткие диски, используют интерфейс SATA для передачи данных."}, {"id": 13, "module": "M1–M4", "moduleNum": 3, "pool": "Final 1–9", "multi": false, "q_en": "A technician is troubleshooting a computer that is experiencing hardware failure detected by the BIOS. What is one way this failure is indicated?", "q_ru": "Техник диагностирует компьютер с аппаратным сбоем, обнаруженным BIOS при запуске. Как BIOS сообщает об этой ошибке?", "opts_en": ["The computer emits a pattern of beeps indicating the failing device.", "The computer automatically boots into Safe Mode and displays a warning on the screen.", "The screen flashes with a red background and displays a warning message.", "The computer returns an error message that indicates the I/O address of the failing device."], "opts_ru": ["Компьютер издает последовательность звуковых сигналов (beep codes), указывающую на неисправное устройство.", "Компьютер автоматически загружается в безопасном режиме (Safe Mode).", "Экран мигает красным фоном с предупреждением.", "Компьютер выводит адрес ввода-вывода (I/O) неисправного устройства."], "ans": [0], "exp": "Во время прохождения POST (Power-On Self-Test) BIOS подает звуковые коды (beep codes), по комбинации которых определяется проблемный узел."}, {"id": 14, "module": "M1–M4", "moduleNum": 3, "pool": "Composite 1–14", "multi": true, "q_en": "Which three features can be configured in the BIOS settings to secure a computer? (Choose three.)", "q_ru": "Какие три функции можно настроить в параметрах BIOS/UEFI для защиты компьютера? (Выберите три ответа.)", "opts_en": ["drive encryption", "TPM", "passwords", "MAC filtering", "file encryption", "TKIP key"], "opts_ru": ["Шифрование дисков (drive encryption)", "Модуль TPM (Trusted Platform Module)", "Пароли (passwords)", "Фильтрация MAC-адресов", "Шифрование отдельных файлов", "Ключ TKIP"], "ans": [0, 1, 2], "exp": "В BIOS/UEFI настраиваются пароли (на вход в систему и Setup), модуль TPM и аппаратное шифрование накопителей."}, {"id": 15, "module": "M1–M4", "moduleNum": 3, "pool": "Composite 1–14", "multi": false, "q_en": "What is the purpose of RAID adapters?", "q_ru": "Каково назначение RAID-адаптеров?", "opts_en": ["to connect multiple storage devices for redundancy or speed", "to allow older PCI technology expansion slots to be used", "to provide enhanced audio and graphic capabilities", "to connect peripheral devices to a PC to improve performance"], "opts_ru": ["Подключение нескольких накопителей для обеспечения отказоустойчивости (избыточности) или повышения скорости", "Использование старых слотов расширения PCI", "Обеспечение улучшенных аудио- и графических возможностей", "Подключение внешних периферийных устройств"], "ans": [0], "exp": "Контроллеры RAID объединяют несколько физических дисков в массив для повышения скорости (RAID 0) и/или отказоустойчивости (RAID 1, 5, 10)."}, {"id": 16, "module": "M1–M4", "moduleNum": 3, "pool": "Final 1–9", "multi": false, "q_en": "A data analyst has asked a technician to help protect locally stored data by installing a RAID. What is the minimum number of drives the technician has to install if configuring a RAID level 5?", "q_ru": "Аналитик данных попросил техника защитить локальные данные с помощью массива RAID. Какое минимальное количество дисков необходимо установить для настройки RAID 5?", "opts_en": ["3", "1", "2", "7", "10"], "opts_ru": ["3 диска", "1 диск", "2 диска", "7 дисков", "10 дисков"], "ans": [0], "exp": "Для работы RAID 5 (чередование с распределенной четностью) требуется минимум 3 жестких диска."}, {"id": 17, "module": "M1–M4", "moduleNum": 2, "pool": "Composite 1–14", "multi": true, "q_en": "When a new motherboard is being installed, between which two components must thermal compound be applied? (Choose two.)", "q_ru": "При установке новой материнской платы между какими двумя компонентами необходимо нанести термопасту? (Выберите два ответа.)", "opts_en": ["CPU", "heat sink", "RAM", "chassis", "chipset", "motherboard"], "opts_ru": ["Центральный процессор (CPU)", "Радиатор охлаждения (heat sink)", "Оперативная память (RAM)", "Корпус (chassis)", "Чипсет", "Материнская плата"], "ans": [0, 1], "exp": "Термопаста заполняет микронеровности между крышкой процессора (CPU) и основанием радиатора (heat sink) для эффективного отвода тепла."}, {"id": 18, "module": "M1–M4", "moduleNum": 1, "pool": "Composite 1–14", "multi": false, "q_en": "What is the purpose of a Safety Data Sheet (SDS)?", "q_ru": "Каково назначение паспорта безопасности химической продукции (Safety Data Sheet, SDS)?", "opts_en": ["to specify procedures for dealing with potentially hazardous materials", "to specify procedures in designing and building common computer systems", "to specify procedures for the operation of sensitive components and prevention of ESD", "to specify procedures in the use of humidity control and prevention of moisture damage"], "opts_ru": ["Определение правил обращения и утилизации потенциально опасных и токсичных материалов", "Определение процедур проектирования компьютерных систем", "Инструкция по защите от электростатического разряда (ESD)", "Инструкция по контролю влажности в серверных помещениях"], "ans": [0], "exp": "Паспорт безопасности (SDS / MSDS) содержит сведения о свойствах опасных веществ (тонера, растворителей, аккумуляторов), мерах первой помощи и правилах утилизации."}, {"id": 19, "module": "M1–M4", "moduleNum": 4, "pool": "Composite 1–14", "multi": false, "q_en": "What is a recommended procedure to follow when cleaning computer components?", "q_ru": "Какой рекомендуемой процедуре следует придерживаться при очистке компонентов компьютера?", "opts_en": ["Hold cans of compressed air upright while spraying.", "Remove the CPU before cleaning.", "Blow compressed air on cooling fans so that they will spin when dust is being removed.", "Use window cleaner on LCD screens."], "opts_ru": ["Держать баллон со сжатым воздухом вертикально во время распыления.", "Извлекать процессор из сокета перед каждой чисткой.", "Раскручивать вентиляторы струей сжатого воздуха.", "Использовать средство для мытья окон с аммиаком на ЖК-экранах."], "ans": [0], "exp": "Баллон со сжатым воздухом необходимо держать строго вертикально, чтобы жидкий пропеллент не попал на платы, а лопасти вентиляторов нужно фиксировать."}, {"id": 20, "module": "M1–M4", "moduleNum": 4, "pool": "Composite 1–14", "multi": false, "q_en": "On the production floor, a furniture plant has laptops for process monitoring. The environment is around 80°F (27°C), humidity is around 70%, and wood dust is prevalent. Which condition is most likely to adversely affect a laptop?", "q_ru": "В цеху мебельной фабрики используются ноутбуки. Температура около 27°C, влажность 70%, в воздухе много древесной пыли. Какой фактор вероятнее всего негативно повлияет на ноутбук?", "opts_en": ["the dust", "the temperature", "the humidity", "the air flow"], "opts_ru": ["Древесная пыль (the dust)", "Температура", "Влажность", "Циркуляция воздуха"], "ans": [0], "exp": "Древесная пыль забивает радиаторы и кулеры ноутбука, что приводит к блокировке охлаждения и перегреву."}, {"id": 21, "module": "M1–M4", "moduleNum": 4, "pool": "Composite 1–14", "multi": true, "q_en": "After a technician tests a theory of probable causes, what two actions should the technician take if the testing did not identify an exact cause? (Choose two.)", "q_ru": "Если после проверки теории вероятных причин точная причина неисправности не была найдена, какие два действия должен предпринять техник? (Выберите два ответа.)", "opts_en": ["Establish a new theory of probable causes.", "Document each test tried that did not correct the problem.", "Randomly replace components one at a time until the problem is solved.", "Verify full system functionality.", "Test all remaining possible causes starting with the most complex."], "opts_ru": ["Выдвинуть новую теорию вероятных причин (или передать задачу на следующий уровень).", "Задокументировать каждую выполненную проверку, которая не решила проблему.", "Случайным образом менять детали по одной.", "Перейти к проверке полной функциональности системы.", "Проверять оставшиеся причины, начиная с самых сложных."], "ans": [0, 1], "exp": "На 3-м шаге методологии поиска неисправностей, если теория не подтвердилась, техник документирует проверенные варианты и выдвигает новую гипотезу (либо эскалирует проблему)."}, {"id": 22, "module": "M1–M4", "moduleNum": 3, "pool": "Composite 1–14", "multi": false, "q_en": "What would happen if a PC that contains a power supply that does not automatically adjust for input voltage is set to 230 volts and attaches to an outlet in the United States?", "q_ru": "Что произойдет, если блок питания ПК без автопереключения напряжения выставлен на 230 В и подключается к розетке в США (115 В)?", "opts_en": ["The PC would not turn on.", "The power supply would explode.", "The PC would display an error code.", "The PC would emit a series of beeps."], "opts_ru": ["ПК просто не включится.", "Блок питания взорвется.", "ПК выведет код ошибки на экран.", "ПК издаст серию звуковых сигналов."], "ans": [0], "exp": "При установке переключателя на 230 В и подаче 115 В входного напряжения будет недостаточно для запуска блока питания, поэтому ПК не включится."}, {"id": 23, "module": "M1–M4", "moduleNum": 3, "pool": "Final 1–9", "multi": false, "q_en": "A technician is troubleshooting a 4-year-old computer that takes a long time to boot, and identifies that the BIOS rediscovers all the hardware at every boot. What action would fix this problem?", "q_ru": "Техник диагностирует 4-летний компьютер, который долго загружается, а BIOS заново определяет все оборудование при каждом включении. Что исправит проблему?", "opts_en": ["Replace the CMOS battery.", "Launch Device Manager to discover new hardware.", "Reset the BIOS using the CMOS jumper.", "Start the computer with the Last Known Good Configuration."], "opts_ru": ["Заменить батарейку CMOS.", "Запустить Диспетчер устройств для поиска оборудования.", "Сбросить BIOS перемычкой CMOS.", "Загрузить последнюю удачную конфигурацию."], "ans": [0], "exp": "Если села батарейка CMOS (CR2032), настройки BIOS и дата/время сбрасываются после каждого отключения питания."}, {"id": 24, "module": "M1–M4", "moduleNum": 4, "pool": "Final 1–9", "multi": false, "q_en": "What cleaning material should be used for cleaning the contacts of components?", "q_ru": "Какое чистящее средство следует использовать для очистки контактов компьютерных компонентов?", "opts_en": ["isopropyl alcohol", "compressed air", "cotton swabs and cloths", "dishwashing liquid and water"], "opts_ru": ["Изопропиловый спирт (isopropyl alcohol)", "Сжатый воздух", "Обычные ватные палочки с водой", "Средство для мытья посуды с водой"], "ans": [0], "exp": "Высокопроцентный изопропиловый спирт быстро испаряется, не оставляет налета и не проводит ток."}, {"id": 25, "module": "M5–M6", "moduleNum": 5, "pool": "Composite 1–14", "multi": false, "q_en": "Which type of network spans a single building or campus and provides services and applications to people within a common organizational structure?", "q_ru": "Какой тип сети охватывает одно здание или кампус и предоставляет сервисы пользователям внутри единой организационной структуры?", "opts_en": ["LAN", "PAN", "WAN", "MAN"], "opts_ru": ["LAN (Local Area Network — локальная сеть)", "PAN (Personal Area Network)", "WAN (Wide Area Network)", "MAN (Metropolitan Area Network)"], "ans": [0], "exp": "Локальная вычислительная сеть (LAN) охватывает ограниченную территорию (офис, здание, кампус) под единым административным управлением."}, {"id": 26, "module": "M5–M6", "moduleNum": 5, "pool": "Composite 1–14", "multi": true, "q_en": "What are two types of wired high-speed Internet connections? (Choose two.)", "q_ru": "Какие два типа подключений относятся к проводному высокоскоростному доступу в Интернет? (Выберите два ответа.)", "opts_en": ["cable", "DSL", "satellite", "cellular", "dial-up"], "opts_ru": ["Кабельное (cable)", "DSL (Digital Subscriber Line)", "Спутниковое (satellite)", "Сотовое (cellular)", "Коммутируемое (dial-up)"], "ans": [0, 1], "exp": "Кабельный интернет (коаксиальный кабель) и DSL (по телефонным линиям) — проводные широкополосные (высокоскоростные) технологии."}, {"id": 27, "module": "M5–M6", "moduleNum": 5, "pool": "Composite 1–14", "multi": true, "q_en": "In what two situations would UDP be better than TCP as the preferred transport protocol? (Choose two.)", "q_ru": "В каких двух ситуациях протокол UDP предпочтительнее TCP на транспортном уровне? (Выберите два ответа.)", "opts_en": ["when a faster delivery mechanism is needed", "when applications do not need to guarantee delivery of the data", "when applications need to guarantee that a packet arrives intact, in sequence, and unduplicated", "when delivery overhead is not an issue", "when destination port numbers are dynamic"], "opts_ru": ["когда требуется более быстрый механизм доставки без задержек", "когда приложениям не требуется гарантированная доставка каждого пакета данных", "когда нужна гарантированная доставка пакетов по порядку без дублирования", "когда накладные расходы протокола не имеют значения", "когда порты назначения динамические"], "ans": [0, 1], "exp": "UDP работает без установления соединения и повторной передачи потерянных пакетов, что идеально подходит для потокового видео, VoIP, онлайн-игр и DNS."}, {"id": 28, "module": "M5–M6", "moduleNum": 5, "pool": "Composite 1–14", "multi": false, "q_en": "The current IP configuration of a small company is done manually and is time-consuming. Because of increased network growth, a technician needs a simpler way for IP configuration of workstations. Which service would simplify the workstation IP configuration task?", "q_ru": "IP-настройка рабочих станций компании выполняется вручную и занимает много времени. Какая сетевая служба автоматизирует и упростит назначение IP-адресов?", "opts_en": ["DHCP", "APIPA", "DNS", "ICMP"], "opts_ru": ["DHCP (Dynamic Host Configuration Protocol)", "APIPA", "DNS", "ICMP"], "ans": [0], "exp": "Сервер DHCP автоматически выдает узлам сети IP-адрес, маску подсети, шлюз по умолчанию и адрес DNS-сервера."}, {"id": 29, "module": "M5–M6", "moduleNum": 5, "pool": "Composite 1–14", "multi": false, "q_en": "A company is looking for a next-generation firewall that provides VPN functionality, IDS/IPS functionality, and DoS/DDoS protection. Which device would be best suited for this task?", "q_ru": "Компании требуется межсетевой экран нового поколения с функциями VPN, IDS/IPS и защитой от DoS/DDoS-атак. Какое устройство лучше всего подойдет?", "opts_en": ["UTM", "multipurpose device", "router", "endpoint management server", "TPM"], "opts_ru": ["UTM (Unified Threat Management — устройство универсального управления угрозами)", "Многофункциональный домашний маршрутизатор", "Обычный маршрутизатор (router)", "Сервер управления конечными точками", "Чип TPM"], "ans": [0], "exp": "Устройство UTM (Unified Threat Management) объединяет функции межсетевого экрана с фильтрацией состояния, VPN, IDS/IPS, фильтрации трафика и защиты от DDoS."}, {"id": 30, "module": "M5–M6", "moduleNum": 6, "pool": "Composite 1–14", "multi": false, "q_en": "A student is helping a friend with a home computer that can no longer access the Internet. Upon investigation, the student discovers that the computer has been assigned the IP address 169.254.100.88. What could cause a computer to get such an IP address?", "q_ru": "Домашний компьютер перестал выходить в Интернет и получил IP-адрес 169.254.100.88. Что могло стать причиной получения такого адреса?", "opts_en": ["unreachable DHCP server", "static IP addressing with incomplete information", "interference from surrounding devices", "reduced computer power supply output"], "opts_ru": ["Недоступность DHCP-сервера (unreachable DHCP server)", "Неполная настройка статического IP-адреса", "Помехи от окружающих беспроводных устройств", "Снижение мощности блока питания"], "ans": [0], "exp": "Диапазон 169.254.0.0/16 — это адреса APIPA (Automatic Private IP Addressing), которые Windows назначает себе автоматически, когда не может связаться с DHCP-сервером."}, {"id": 31, "module": "M5–M6", "moduleNum": 6, "pool": "Composite 1–14", "multi": true, "q_en": "What three values must be added to the IPv4 properties of a NIC in order for a computer to have basic connectivity with the network and the internet? (Choose three.)", "q_ru": "Какие три параметра необходимо указать в свойствах IPv4 сетевой карты для базового подключения к сети и выхода в другие подсети? (Выберите три ответа.)", "opts_en": ["IP address", "subnet mask", "default gateway", "DHCP server address", "domain name", "speed and duplex"], "opts_ru": ["IP-адрес (IP address)", "Маска подсети (subnet mask)", "Шлюз по умолчанию (default gateway)", "Адрес DHCP-сервера", "Имя домена", "Скорость и режим дуплекса"], "ans": [0, 1, 2], "exp": "Для статической настройки IPv4 и связи с внешними сетями необходимы IP-адрес, маска подсети и шлюз по умолчанию (плюс DNS для разрешения имен)."}, {"id": 32, "module": "M5–M6", "moduleNum": 6, "pool": "Composite 1–14", "multi": false, "q_en": "A device has an IPv6 address of 2001:0DB8:75a3:0214:0607:1234:aa10:ba01 /64. What is the host identifier (interface ID) of the device?", "q_ru": "Устройство имеет IPv6-адрес 2001:0DB8:75a3:0214:0607:1234:aa10:ba01 /64. Какова часть идентификатора узла (Interface ID)?", "opts_en": ["0607:1234:aa10:ba01", "2001:0DB8:75a3", "2001:0DB8", "ba01"], "opts_ru": ["0607:1234:aa10:ba01 (последние 64 бита / 4 хекстета)", "2001:0DB8:75a3", "2001:0DB8", "ba01"], "ans": [0], "exp": "При префиксе /64 первые 4 хекстета (64 бита) определяют сеть (Network Prefix), а последние 4 хекстета (0607:1234:aa10:ba01) — идентификатор интерфейса (Host/Interface ID)."}, {"id": 33, "module": "M5–M6", "moduleNum": 6, "pool": "Composite 1–14", "multi": false, "q_en": "How can a user prevent specific applications from accessing a Windows computer over a network?", "q_ru": "Как пользователь может запретить определенным приложениям доступ к компьютеру Windows по сети?", "opts_en": ["Block specific TCP or UDP ports in Windows Firewall.", "Enable MAC address filtering.", "Disable automatic IP address assignment.", "Change default usernames and passwords."], "opts_ru": ["Заблокировать определенные порты TCP или UDP в брандмауэре Windows (Windows Firewall).", "Включить фильтрацию MAC-адресов.", "Отключить автоматическое получение IP-адресов.", "Сменить стандартные имена пользователей и пароли."], "ans": [0], "exp": "Приложения используют конкретные порты TCP/UDP; блокировка этих портов в Windows Defender Firewall запрещает сетевой трафик этих программ."}, {"id": 34, "module": "M5–M6", "moduleNum": 5, "pool": "Final 1–9", "multi": false, "q_en": "What is the distance limit of a single data run for UTP cabling without adding network devices?", "q_ru": "Какова максимальная длина одного сегмента кабеля витой пары (UTP) для передачи данных без использования повторителей или коммутаторов?", "opts_en": ["330 ft (100 m)", "33 ft (10 m)", "100 ft (31 m)", "500 ft (154 m)"], "opts_ru": ["100 метров (330 футов)", "10 метров (33 фута)", "31 метр (100 футов)", "154 метра (500 футов)"], "ans": [0], "exp": "По стандарту Ethernet максимальная длина канала UTP без регенерации сигнала составляет 100 метров (около 328–330 футов)."}, {"id": 35, "module": "M5–M6", "moduleNum": 6, "pool": "Final 1–9", "multi": false, "q_en": "What is the default subnet mask for a Class A IPv4 network?", "q_ru": "Какова маска подсети по умолчанию для сети IPv4 класса A?", "opts_en": ["255.0.0.0", "255.255.0.0", "255.255.255.0", "255.255.255.255"], "opts_ru": ["255.0.0.0 (/8)", "255.255.0.0 (/16)", "255.255.255.0 (/24)", "255.255.255.255 (/32)"], "ans": [0], "exp": "Сети класса A (1.0.0.0 – 126.0.0.0) имеют маску по умолчанию 255.0.0.0 (/8), класса B — 255.255.0.0 (/16), класса C — 255.255.255.0 (/24)."}, {"id": 36, "module": "M5–M6", "moduleNum": 6, "pool": "Final 10–14", "multi": false, "q_en": "A technician is troubleshooting an employee laptop that connects to the Internet at the office (which uses DHCP), but cannot connect in a research lab (which does not use DHCP). How can the technician solve this problem?", "q_ru": "Ноутбук сотрудника подключается к сети в офисе (где работает DHCP), но не может подключиться в лаборатории (где нет DHCP). Как решить эту проблему без постоянного ручного переключения?", "opts_en": ["Implement an Alternate Configuration IPv4 address on the laptop.", "Change the DNS server IPv4 address on the laptop.", "Modify the proxy settings used on the laptop.", "Adjust the default gateway IPv4 address on the laptop."], "opts_ru": ["Настроить альтернативную конфигурацию IPv4 (Alternate Configuration) в свойствах TCP/IPv4.", "Изменить только адрес DNS-сервера.", "Изменить настройки прокси-сервера.", "Изменить только адрес шлюза по умолчанию."], "ans": [0], "exp": "Вкладка «Альтернативная конфигурация» (Alternate Configuration) в свойствах TCP/IPv4 позволяет задать статический IP, который автоматически применяется, если DHCP-сервер не отвечает."}, {"id": 37, "module": "M7–M8", "moduleNum": 7, "pool": "Composite 1–14", "multi": false, "q_en": "A technician has been asked to configure Wi-Fi calling on a corporate mobile device. In which situation would this feature be most advantageous?", "q_ru": "Техника попросили настроить функцию вызова по Wi-Fi (Wi-Fi calling) на корпоративном смартфоне. В какой ситуации эта функция наиболее полезна?", "opts_en": ["when in an area with poor cellular coverage", "in an emergency situation and no minutes are left on the phone", "when sending WEA updates", "in a store transaction making a payment using the mobile device"], "opts_ru": ["при нахождении в зоне со слабым покрытием сотовой сети", "при отсутствии минут на балансе в экстренной ситуации", "при отправке экстренных оповещений WEA", "при бесконтактной оплате покупок в магазине"], "ans": [0], "exp": "Wi-Fi Calling позволяет совершать голосовые вызовы и отправлять SMS через сеть Wi-Fi там, где сигнал базовых станций сотовой связи слабый или отсутствует."}, {"id": 38, "module": "M7–M8", "moduleNum": 7, "pool": "Composite 1–14", "multi": false, "q_en": "Which statement is true about laptops?", "q_ru": "Какое утверждение относительно ноутбуков является верным?", "opts_en": ["Most of the internal components that are designed for laptops cannot be used for desktops.", "Laptop motherboards have standard form factors.", "Laptops use fewer components than desktops use.", "Laptop CPUs do not use cooling devices."], "opts_ru": ["Большинство внутренних компонентов, разработанных для ноутбуков, нельзя использовать в настольных ПК.", "Материнские платы ноутбуков имеют стандартные форм-факторы ATX/mATX.", "В ноутбуках используется меньше типов функциональных компонентов, чем в ПК.", "Процессоры ноутбуков не используют систем охлаждения."], "ans": [0], "exp": "Компоненты ноутбуков (материнские платы, модули памяти SO-DIMM, системы охлаждения) компактны и специфичны, поэтому не подходят для настольных ПК."}, {"id": 39, "module": "M7–M8", "moduleNum": 7, "pool": "Composite 1–14", "multi": false, "q_en": "Which standard provides a bridge between laptop hardware and the operating system and a way for technicians to configure power management schemes to get the best performance?", "q_ru": "Какой стандарт обеспечивает взаимодействие между аппаратным обеспечением ноутбука и ОС для настройки схем управления электропитанием?", "opts_en": ["ACPI", "PCIe", "Bluetooth", "802.11"], "opts_ru": ["ACPI (Advanced Configuration and Power Interface)", "PCIe", "Bluetooth", "802.11"], "ans": [0], "exp": "Стандарт ACPI (Advanced Configuration and Power Interface) управляет состояниями питания S0–S5 (сон, гибернация, отключение устройств) через BIOS/UEFI и ОС."}, {"id": 40, "module": "M7–M8", "moduleNum": 7, "pool": "Composite 1–14", "multi": true, "q_en": "Which two laptop components are considered replaceable by the customer (CRU)? (Choose two.)", "q_ru": "Какие два компонента ноутбука обычно относятся к заменяемым самим пользователем (CRU — Customer-Replaceable Units)? (Выберите два ответа.)", "opts_en": ["battery", "RAM", "integrated card reader", "mini-PCIe module", "display"], "opts_ru": ["Аккумуляторная батарея (battery)", "Оперативная память (RAM)", "Встроенный кардридер", "Внутренний модуль mini-PCIe", "Матрица дисплея (display)"], "ans": [0, 1], "exp": "К элементам CRU (Customer-Replaceable Units) традиционно относятся батарея и модули памяти RAM (а элементы вроде дисплея и материнской платы — это FRU)."}, {"id": 41, "module": "M7–M8", "moduleNum": 7, "pool": "Composite 1–14", "multi": true, "q_en": "A user wants to synchronize some apps, movies, music, and ebooks between mobile devices. What are the two types of connections used to synchronize this type of data? (Choose two.)", "q_ru": "Пользователь хочет синхронизировать приложения, фильмы, музыку и книги между мобильными устройствами и ПК. Какие два типа подключений используются для такой синхронизации? (Выберите два ответа.)", "opts_en": ["Wi-Fi", "USB", "cellular", "Bluetooth", "NFC"], "opts_ru": ["Wi-Fi", "USB", "Сотовая сеть (cellular)", "Bluetooth", "NFC"], "ans": [0, 1], "exp": "Для передачи больших объемов мультимедиа и резервных копий при синхронизации используются высокоскоростные соединения USB или Wi-Fi."}, {"id": 42, "module": "M7–M8", "moduleNum": 7, "pool": "Final 1–9", "multi": true, "q_en": "What are the two actions to be taken beforehand when installing RAM in a laptop? (Choose two.)", "q_ru": "Какие два действия необходимо выполнить перед установкой оперативной памяти (RAM) в ноутбук? (Выберите два ответа.)", "opts_en": ["Remove the battery.", "Unplug the power supply.", "Use thermal compound to connect the memory to the motherboard.", "Disconnect the screen from the lower part of the laptop.", "Remove the retention clips from the memory module slots."], "opts_ru": ["Извлечь/отключить аккумуляторную батарею.", "Отсоединить адаптер переменного тока (блок питания).", "Нанести термопасту на контакты памяти.", "Отсоединить крышку экрана от корпуса.", "Снять фиксирующие защелки со слота памяти."], "ans": [0, 1], "exp": "Перед любым вмешательством во внутренние компоненты ноутбука обязательно отключается внешний блок питания и отсоединяется аккумулятор."}, {"id": 43, "module": "M7–M8", "moduleNum": 8, "pool": "Composite 1–14", "multi": true, "q_en": "What are two safety hazards when dealing with laser printers? (Choose two.)", "q_ru": "Какие два фактора представляют опасность при обслуживании лазерных принтеров? (Выберите два ответа.)", "opts_en": ["high voltage", "hot components", "heavy metals", "proprietary power bricks", "unwieldy card cages"], "opts_ru": ["Высокое напряжение (high voltage — коронаторы)", "Горячие компоненты (hot components — узел термозакрепления / печка)", "Тяжелые металлы", "Проприетарные внешние блоки питания", "Громоздкие корзины плат"], "ans": [0, 1], "exp": "В лазерном принтере блок формирования изображения и коронаторы находятся под высоким напряжением, а узел термозакрепления (fuser) разогревается до ~200°C."}, {"id": 44, "module": "M7–M8", "moduleNum": 8, "pool": "Composite 1–14", "multi": true, "q_en": "A technician is explaining the differences between inkjet printers and laser printers to a customer. Which two comparisons should the technician make? (Choose two.)", "q_ru": "Техник объясняет клиенту разницу между струйными и лазерными принтерами. Какие два сравнения являются верными? (Выберите два ответа.)", "opts_en": ["Inkjet printers are less expensive as an initial purchase than laser printers.", "The laser printer output is dry after printing, but an inkjet printer may still have wet ink on the paper after printing.", "A laser printer is significantly slower than an inkjet printer.", "Both laser and inkjet printers produce poor quality images.", "Inkjet printers use plain paper, but laser printers require thermal paper."], "opts_ru": ["Струйные принтеры дешевле при первоначальной покупке, чем лазерные.", "Лист из лазерного принтера выходит сухим, а после струйного принтера чернила на бумаге могут быть еще влажными.", "Лазерный принтер печатает значительно медленнее струйного.", "Оба типа принтеров дают низкое качество печати.", "Лазерные принтеры требуют специальной термобумаги."], "ans": [0, 1], "exp": "Струйные принтеры имеют низкую стартовую стоимость, но используют жидкие чернила; лазерные принтеры дороже при покупке, но запекают сухой тонер с высокой скоростью."}, {"id": 45, "module": "M7–M8", "moduleNum": 8, "pool": "Composite 1–14", "multi": false, "q_en": "A user chooses the collate option and prints two copies of a three-page document. What is the order in which the pages are printed?", "q_ru": "Пользователь включает опцию разбора по копиям (Collate) и печатает 2 копии 3-страничного документа. В каком порядке будут напечатаны страницы?", "opts_en": ["pages 1, 2, 3, 1, 2, 3", "pages 1, 1, 2, 2, 3, 3", "pages 3, 3, 2, 2, 1, 1", "pages 3, 2, 1, 3, 2, 1"], "opts_ru": ["страницы 1, 2, 3, 1, 2, 3", "страницы 1, 1, 2, 2, 3, 3", "страницы 3, 3, 2, 2, 1, 1", "страницы 3, 2, 1, 3, 2, 1"], "ans": [0], "exp": "Функция Collate («Разобрать по копиям») печатает сначала полный первый экземпляр (1, 2, 3), затем полный второй экземпляр (1, 2, 3)."}, {"id": 46, "module": "M7–M8", "moduleNum": 8, "pool": "Composite 1–14", "multi": false, "q_en": "A color laser printer is used to print documents with graphics and photographs. Users are complaining that printing takes too long. Which component of the printer should be upgraded in order to improve printing performance?", "q_ru": "Цветной лазерный принтер используется для печати документов с графикой и фото. Пользователи жалуются, что печать идет слишком медленно. Какой компонент принтера следует модернизировать?", "opts_en": ["RAM", "CPU", "hard drive", "toner cartridges"], "opts_ru": ["Оперативную память принтера (RAM)", "Процессор принтера", "Жесткий диск", "Картриджи с тонером"], "ans": [0], "exp": "Увеличение объема встроенной памяти (RAM) принтера позволяет быстрее буферизовать и обрабатывать тяжелые графические задания печати."}, {"id": 47, "module": "M7–M8", "moduleNum": 8, "pool": "Composite 1–14", "multi": false, "q_en": "What service is available for Windows to provide software print server services to macOS clients?", "q_ru": "Какая служба доступна для Windows, чтобы предоставлять функции программного принт-сервера клиентам с macOS?", "opts_en": ["Bonjour Print Server", "Print to XPS", "Apple AirPort Extreme", "Apple AirPrint"], "opts_ru": ["Bonjour Print Server (Bonjour для Windows)", "Print to XPS", "Apple AirPort Extreme", "Apple AirPrint"], "ans": [0], "exp": "Утилита Apple Bonjour Print Server для Windows позволяет компьютерам macOS автоматически обнаруживать и использовать общие принтеры, подключенные к ПК с Windows."}, {"id": 48, "module": "M7–M8", "moduleNum": 8, "pool": "Composite 1–14", "multi": true, "q_en": "Which three components are typically found in laser printer maintenance kits? (Choose three.)", "q_ru": "Какие три компонента обычно входят в сервисный комплект обслуживания (maintenance kit) лазерного принтера? (Выберите три ответа.)", "opts_en": ["fuser assembly", "pickup rollers", "transfer rollers", "primary corona", "secondary corona", "paper trays"], "opts_ru": ["Узел термозакрепления / печка (fuser assembly)", "Ролики захвата бумаги (pickup rollers)", "Ролики переноса (transfer rollers)", "Первичный коронатор", "Вторичный коронатор", "Лотки для бумаги"], "ans": [0, 1, 2], "exp": "Стандартный комплект обслуживания лазерного принтера включает изнашиваемые детали: термоузел (fuser assembly), ролики захвата (pickup rollers) и ролики переноса/отделения (transfer/separation rollers)."}, {"id": 49, "module": "M7–M8", "moduleNum": 8, "pool": "Composite 1–14", "multi": false, "q_en": "A technician is installing a new printer in a cool, damp environment. After the printer cabling is done, and the software and print driver are installed, the printer test page jams. What is the most likely cause of the print failure?", "q_ru": "Техник устанавливает новый принтер в прохладном, влажном помещении. После подключения кабелей и установки драйвера пробная страница застревает. Какова наиболее вероятная причина?", "opts_en": ["too much humidity", "incorrect printer driver", "not enough printer memory", "loose printer cables"], "opts_ru": ["Слишком высокая влажность (бумага отсырела и слипается)", "Неправильный драйвер принтера", "Недостаточно памяти принтера", "Плохо закрепленные кабели принтера"], "ans": [0], "exp": "Из-за повышенной влажности бумага впитывает влагу, становится тяжелой и слипается, что приводит к замятиям (paper jams)."}, {"id": 50, "module": "M9", "moduleNum": 9, "pool": "Composite 1–14", "multi": false, "q_en": "A data center has recently updated a physical server to host multiple operating systems on a single CPU. The data center can now provide each customer with a separate web server without having to allocate an actual discrete server for each customer. What is the networking trend that is being implemented?", "q_ru": "Дата-центр обновил физический сервер для размещения нескольких ОС на одном процессоре, предоставляя каждому клиенту отдельный веб-сервер без выделения физического сервера. Какая технология реализована?", "opts_en": ["virtualization", "BYOD", "maintaining communication integrity", "online collaboration"], "opts_ru": ["Виртуализация (virtualization)", "BYOD", "Поддержание целостности связи", "Онлайн-коллаборация"], "ans": [0], "exp": "Виртуализация позволяет запускать несколько независимых виртуальных машин и ОС на одном физическом сервере."}, {"id": 51, "module": "M9", "moduleNum": 9, "pool": "Composite 1–14", "multi": false, "q_en": "How does virtualization help with disaster recovery within a data center?", "q_ru": "Как виртуализация помогает при аварийном восстановлении (disaster recovery) в дата-центре?", "opts_en": ["Hardware does not have to be identical.", "Power is always provided.", "Less energy is consumed.", "Server provisioning is faster."], "opts_ru": ["Аппаратное обеспечение резервного сервера не обязательно должно быть идентичным (Hardware does not have to be identical).", "Питание подается непрерывно.", "Потребляется меньше энергии.", "Ускоряется первичная закупка серверов."], "ans": [0], "exp": "Поскольку гипервизор абстрагирует виртуальную машину от физического железа, образ ВМ можно быстро развернуть на другом физическом сервере с отличающейся аппаратной конфигурацией."}, {"id": 52, "module": "M9", "moduleNum": 9, "pool": "Composite 1–14", "multi": true, "q_en": "Which two hypervisors are suitable to support virtual machines in a data center (Type 1 bare-metal hypervisors)? (Choose two.)", "q_ru": "Какие два гипервизора подходят для поддержки виртуальных машин в дата-центре (гипервизоры 1-го типа)? (Выберите два ответа.)", "opts_en": ["VMware ESX/ESXi", "Microsoft Hyper-V 2012", "Virtual PC", "VMware Fusion", "Oracle VM VirtualBox"], "opts_ru": ["VMware ESX/ESXi", "Microsoft Hyper-V 2012", "Windows Virtual PC", "VMware Fusion", "Oracle VM VirtualBox"], "ans": [0, 1], "exp": "VMware ESX/ESXi и серверный Microsoft Hyper-V — это гипервизоры 1-го типа (native / bare-metal), устанавливаемые напрямую на серверное оборудование в ЦОД."}, {"id": 53, "module": "M9", "moduleNum": 9, "pool": "Composite 1–14", "multi": false, "q_en": "A web designer accesses a company Windows 10 computer remotely and opens multiple applications in different virtual desktops. What technology is being used by the designer?", "q_ru": "Веб-дизайнер удаленно подключается к корпоративному ПК с Windows 10 и открывает приложения на разных виртуальных рабочих столах. Какая технология используется?", "opts_en": ["virtual desktop infrastructure (VDI)", "virtual reality", "Windows Virtual Desktop", "cloud-based applications"], "opts_ru": ["Инфраструктура виртуальных рабочих столов (virtual desktop infrastructure / Windows Virtual Desktop)", "Виртуальная реальность (VR)", "Облачные приложения", "Локальная песочница"], "ans": [0], "exp": "VDI / Windows Virtual Desktop позволяет работать с виртуальными рабочими столами Windows."}, {"id": 54, "module": "M9", "moduleNum": 9, "pool": "Composite 1–14", "multi": false, "q_en": "Which Cloud computing service would be best for an organization that needs to collaboratively create applications and deliver them over the web?", "q_ru": "Какая модель облачных вычислений лучше всего подойдет организации, которой необходимо совместно разрабатывать приложения и доставлять их через веб?", "opts_en": ["PaaS", "IaaS", "SaaS", "ITaaS"], "opts_ru": ["PaaS (Platform as a Service — Платформа как услуга)", "IaaS (Инфраструктура как услуга)", "SaaS (Программное обеспечение как услуга)", "ITaaS (ИТ как услуга)"], "ans": [0], "exp": "PaaS предоставляет готовую среду и инструменты разработки, тестирования и развертывания приложений."}, {"id": 55, "module": "M9", "moduleNum": 9, "pool": "Final 1–9", "multi": false, "q_en": "A user wants to sync files across multiple devices without storing data on a third-party server. Which cloud deployment model best meets this requirement?", "q_ru": "Организация хочет синхронизировать данные между устройствами, не размещая их на серверах сторонних провайдеров. Какая модель развертывания облака подойдет лучше всего?", "opts_en": ["Private cloud", "Public cloud", "Hybrid cloud", "Community cloud"], "opts_ru": ["Частное облако (Private cloud)", "Публичное облако (Public cloud)", "Гибридное облако (Hybrid cloud)", "Общественное облако (Community cloud)"], "ans": [0], "exp": "Частное облако (Private cloud) разворачивается внутри собственной инфраструктуры организации без передачи данных внешним провайдерам."}, {"id": 56, "module": "M10–M11", "moduleNum": 10, "pool": "Final 10–14", "multi": true, "q_en": "Which two tools are available to transfer user data and settings from an old Windows computer to a Windows operating system on a new computer? (Choose two.)", "q_ru": "Какие два инструмента используются для переноса пользовательских данных и настроек со старого компьютера Windows на новый? (Выберите два ответа.)", "opts_en": ["Windows Easy Transfer", "User State Migration Tool (USMT)", "Windows User Manager", "Windows Upgrade Assistant", "Windows Upgrade Advisor"], "opts_ru": [" Средство переноса данных Windows (Windows Easy Transfer)", "Средство миграции пользовательской среды (User State Migration Tool — USMT)", "Диспетчер пользователей Windows", "Помощник по обновлению Windows", "Советник по переходу на Windows"], "ans": [0, 1], "exp": "Для миграции профилей и файлов между ПК используются Windows Easy Transfer (в Windows 7/8) и корпоративный пакет USMT (или PCmover Express в Windows 10)."}, {"id": 57, "module": "M10–M11", "moduleNum": 10, "pool": "Final 10–14", "multi": false, "q_en": "Why is a full format more beneficial than a quick format when preparing for a clean OS installation?", "q_ru": "Почему полное форматирование (full format) полезнее быстрого (quick format) при подготовке к чистой установке ОС?", "opts_en": ["A full format will delete files from the disk while analyzing the disk drive for errors.", "A full format is the only method of installing Windows on a PC that has an OS currently installed.", "A full format will delete every partition on the hard drive.", "A full format converts the disk from basic to dynamic automatically."], "opts_ru": ["Полное форматирование удаляет файлы с диска и одновременно проверяет поверхность накопителя на наличие сбойных секторов (bad sectors).", "Это единственный способ установить Windows поверх старой ОС.", "Полное форматирование удаляет все разделы на жестком диске.", "Полное форматирование преобразует базовый диск в динамический."], "ans": [0], "exp": "В отличие от быстрого форматирования (которое лишь очищает таблицу файлов), полное форматирование сканирует весь раздел на физические ошибки чтения/записи."}, {"id": 58, "module": "M10–M11", "moduleNum": 10, "pool": "Final 10–14", "multi": false, "q_en": "Which location on a hard disk is used by the BIOS to search for operating system instructions in order to boot a PC?", "q_ru": "Какую область на жестком диске использует BIOS для поиска инструкций загрузки операционной системы?", "opts_en": ["the active partition", "the logical drive", "the Windows partition", "the extended partition"], "opts_ru": ["Активный раздел (the active partition)", "Логический диск (the logical drive)", "Раздел Windows", "Расширенный раздел (the extended partition)"], "ans": [0], "exp": "На диске с разметкой MBR только один основной (primary) раздел может быть помечен как активный (active partition) — именно с него загружается загрузчик ОС."}, {"id": 59, "module": "M10–M11", "moduleNum": 10, "pool": "Final 10–14", "multi": false, "q_en": "A technician is asked to set up one hard drive that will support two operating systems and will store data files in three separate drive locations. Which partition settings will support these requirements?", "q_ru": "Технику нужно настроить один жесткий диск (MBR) для работы двух ОС и хранения данных на трех отдельных логических томах. Какая схема разделов подойдет?", "opts_en": ["2 primary, 1 active, 1 extended, 3 logical", "1 primary, 3 active, 1 extended, 2 logical", "2 logical, 2 active, 3 extended", "3 primary, 1 active, 2 extended"], "opts_ru": ["2 основных (primary), 1 активный (active), 1 дополнительный (extended), 3 логических (logical)", "1 основной, 3 активных, 1 дополнительный, 2 логических", "2 логических, 2 активных, 3 дополнительных", "3 основных, 1 активный, 2 дополнительных"], "ans": [0], "exp": "Каждая из двух ОС устанавливается в свой основной раздел (2 primary, при этом только 1 из них активный), а внутри 1 дополнительного раздела (extended) создаются 3 логических диска для данных."}, {"id": 60, "module": "M10–M11", "moduleNum": 10, "pool": "Final 10–14", "multi": false, "q_en": "A technician uses the Shrink Volume function of the Disk Management utility. What should the technician do next to use the new space?", "q_ru": "Техник уменьшил размер тома (Shrink Volume) в утилите «Управление дисками». Что нужно сделать дальше, чтобы использовать освободившееся место?", "opts_en": ["Partition the unallocated space.", "Format the existing partition.", "Delete all partitions and reset the disk.", "Convert the unallocated space into a dynamic disk."], "opts_ru": ["Создать новый раздел/том на нераспределенном пространстве (Partition the unallocated space) и отформатировать его.", "Отформатировать существующий раздел.", "Удалить все разделы и сбросить диск.", "Преобразовать нераспределенное место в динамический диск."], "ans": [0], "exp": "После сжатия тома образуется нераспределенное пространство (unallocated space), на котором нужно создать новый том и отформатировать его."}, {"id": 61, "module": "M10–M11", "moduleNum": 10, "pool": "Final 10–14", "multi": false, "q_en": "A technician is trying to create several partitions on a hard drive that uses the boot sector standard which supports a maximum partition size of 2 TB (MBR). What is the maximum number of primary partitions allowed per hard drive?", "q_ru": "Техник создает разделы на диске со стандартом загрузочного сектора, поддерживающим размер раздела до 2 ТБ (MBR). Каково максимальное число основных (primary) разделов на таком диске?", "opts_en": ["4", "128", "32", "2", "16"], "opts_ru": ["4 основных раздела (4 primary partitions)", "128 разделов (это для GPT)", "32 раздела", "2 раздела", "16 разделов"], "ans": [0], "exp": "Стандарт MBR поддерживает размер раздела до 2 ТБ и максимум 4 основных (primary) раздела (либо 3 основных + 1 расширенный). Стандарт GPT поддерживает до 128 основных разделов."}, {"id": 62, "module": "M10–M11", "moduleNum": 10, "pool": "Final 10–14", "multi": false, "q_en": "A network administrator is responsible for deploying Windows 10 Pro to a large number of new PCs. What tool does the administrator need to use to remove all computer- and user-specific information (such as the SID) before creating a deployable disk image?", "q_ru": "Администратор подготавливает эталонный образ Windows 10 Pro для массового развертывания на новые ПК. Какую утилиту нужно запустить для удаления уникальных идентификаторов компьютера (SID) перед клонированием образа?", "opts_en": ["sysprep.exe", "msconfig.exe", "regedit.exe", "dism.exe"], "opts_ru": ["sysprep.exe (Microsoft System Preparation Tool)", "msconfig.exe", "regedit.exe", "dism.exe"], "ans": [0], "exp": "Утилита Sysprep (sysprep.exe) очищает уникальные параметры системы (SID, привязки драйверов и учетных записей) перед захватом клонируемого образа."}, {"id": 63, "module": "M10–M11", "moduleNum": 10, "pool": "Final 10–14", "multi": false, "q_en": "A network analyst starts a PC on which Windows is installed. The BIOS starts the computer using the first drive that contains a valid boot sector. What is the next step that will occur in the boot process?", "q_ru": "Аналитик включает ПК с Windows. BIOS обращается к первому диску с допустимым загрузочным сектором. Какой следующий шаг произойдет в процессе загрузки?", "opts_en": ["The code in the boot sector is executed and control of the boot process is given to Windows Boot Manager (BOOTMGR).", "Winlogon.exe displays the Windows welcome screen.", "Winload.exe starts the logon file called Winlogon.exe.", "The Windows kernel takes over the boot process."], "opts_ru": ["Выполняется код загрузочного сектора, и управление передается диспетчеру загрузки Windows (Windows Boot Manager / BOOTMGR).", "Winlogon.exe отображает экран приветствия Windows.", "Winload.exe запускает файл входа Winlogon.exe.", "Ядро Windows перехватывает управление загрузкой."], "ans": [0], "exp": "Порядок загрузки Windows: POST -> MBR/Загрузочный сектор -> BOOTMGR (Windows Boot Manager) -> Winload.exe -> Ядро NTOSKRNL.exe -> Winlogon.exe."}, {"id": 64, "module": "M10–M11", "moduleNum": 10, "pool": "Final 10–14", "multi": false, "q_en": "What is the default file system used during a new installation of Windows 10?", "q_ru": "Какая файловая система используется по умолчанию при чистой установке Windows 10?", "opts_en": ["NTFS", "FAT32", "FAT16", "exFAT"], "opts_ru": ["NTFS (New Technology File System)", "FAT32", "FAT16", "exFAT"], "ans": [0], "exp": "NTFS — стандартная файловая система для установки современных версий Windows, поддерживающая права доступа ACL, шифрование EFS и журналирование."}, {"id": 65, "module": "M10–M11", "moduleNum": 10, "pool": "Final 10–14", "multi": false, "q_en": "Which statement is correct about installing a 32-bit operating system on an x64 architecture processor?", "q_ru": "Какое утверждение верно относительно установки 32-разрядной ОС на процессор с архитектурой x64?", "opts_en": ["The operating system will function correctly (but will only address up to 4 GB of RAM).", "This combination will provide better security than a 64-bit OS.", "The operating system can address more than 128 GB of memory.", "The operating system will always use all the RAM available."], "opts_ru": ["Операционная система будет работать корректно (но сможет адресовать не более 4 ГБ ОЗУ).", "Такая комбинация обеспечит лучшую безопасность, чем 64-битная ОС.", "ОС сможет адресовать более 128 ГБ памяти.", "ОС всегда будет использовать весь доступный объем ОЗУ."], "ans": [0], "exp": "Процессоры x64 обратно совместимы с 32-битными (x86) операционными системами, поэтому ОС будет работать исправно, но с лимитом ОЗУ 4 ГБ."}, {"id": 66, "module": "M10–M11", "moduleNum": 11, "pool": "Final 10–14", "multi": false, "q_en": "Where are 32-bit program files located in a 64-bit version of Windows 10 Pro?", "q_ru": "В какой папке по умолчанию устанавливаются 32-разрядные программы в 64-разрядной версии Windows 10 Pro?", "opts_en": ["C:\\Program Files (x86)", "C:\\Windows\\System32", "C:\\Users", "C:\\Program Files"], "opts_ru": ["C:\\Program Files (x86)", "C:\\Windows\\System32", "C:\\Users", "C:\\Program Files"], "ans": [0], "exp": "В 64-битной Windows 64-битные приложения устанавливаются в C:\\Program Files, а 32-битные (x86) — в C:\\Program Files (x86)."}, {"id": 67, "module": "M10–M11", "moduleNum": 11, "pool": "Final 10–14", "multi": true, "q_en": "When a user attempts to run a program, a missing or corrupted DLL message appears. What are two possible solutions to this problem? (Choose two.)", "q_ru": "При попытке запуска программы появляется ошибка об отсутствующем или поврежденном файле DLL. Какие два решения помогут исправить проблему? (Выберите два ответа.)", "opts_en": ["Register the DLL file using the regsvr32 command.", "Run sfc /scannow in Safe Mode.", "Use the msconfig command to adjust the program startup parameters.", "Run the automatic restart tool.", "Reinstall the hardware drivers."], "opts_ru": ["Зарегистрировать файл библиотеки DLL с помощью команды regsvr32.", "Запустить проверку системных файлов sfc /scannow в безопасном режиме.", "Использовать msconfig для изменения параметров автозагрузки.", "Запустить средство автоматической перезагрузки.", "Переустановить драйверы монитора."], "ans": [0, 1], "exp": "Команда regsvr32 регистрирует библиотеки .dll в реестре, а утилита sfc /scannow восстанавливает поврежденные системные библиотеки Windows."}, {"id": 68, "module": "M10–M11", "moduleNum": 11, "pool": "Final 10–14", "multi": true, "q_en": "A user submitted a ticket indicating the computer displays the error 'BOOTMGR is missing' after POST on a Windows 10 machine. What are two possible solutions? (Choose two.)", "q_ru": "На компьютере с Windows 10 после POST появляется ошибка «BOOTMGR is missing». Какие два действия помогут устранить эту проблему? (Выберите два ответа.)", "opts_en": ["Restore BOOTMGR using the Windows Recovery Environment (WinRE).", "Execute the bootrec /fixboot command.", "Run chkdsk /F /R from the normal desktop.", "Run antivirus software from the desktop.", "Use Last Known Good Configuration."], "opts_ru": ["Восстановить BOOTMGR через среду восстановления Windows (WinRE).", "Выполнить команду bootrec /fixboot в командной строке восстановления.", "Запустить chkdsk с рабочего стола.", "Запустить антивирус с рабочего стола.", "Использовать последнюю удачную конфигурацию."], "ans": [0, 1], "exp": "При ошибке «BOOTMGR is missing» необходимо загрузиться со среды восстановления Windows (WinRE) и выполнить восстановление загрузчика (Startup Repair или bootrec /fixboot)."}, {"id": 69, "module": "M10–M11", "moduleNum": 11, "pool": "Final 10–14", "multi": false, "q_en": "A user reports that 'Invalid system disk' or 'Invalid boot disk' error messages display on the workstation when powered on. The technician suspects that the MBR is corrupted. Which command can the technician use to check and repair the MBR?", "q_ru": "При включении рабочей станции появляется ошибка «Invalid system disk». Техник подозревает повреждение главной загрузочной записи (MBR). Какая команда восстановит MBR?", "opts_en": ["Run the bootrec command (bootrec /fixmbr).", "Run the chkdsk command.", "Start the workstation in Safe Mode.", "Run the regsvr32 command."], "opts_ru": ["Выполнить команду bootrec (bootrec /fixmbr).", "Выполнить команду chkdsk.", "Запустить рабочую станцию в безопасном режиме.", "Выполнить команду regsvr32."], "ans": [0], "exp": "Утилита bootrec (в частности, ключ bootrec /fixmbr) в среде восстановления Windows используется для перезаписи и исправления поврежденной записи MBR."}, {"id": 70, "module": "M10–M11", "moduleNum": 11, "pool": "Final 10–14", "multi": false, "q_en": "A technician visits a website using Google Chrome on a Windows 10 PC and tries to view the website password in Windows Credential Manager, but cannot see it. What is the cause?", "q_ru": "Техник зашел на сайт через браузер Google Chrome в Windows 10 и пытается посмотреть сохраненный пароль сайта в Диспетчере учетных данных Windows (Credential Manager), но его там нет. В чем причина?", "opts_en": ["Web credentials are not stored in Windows Credential Manager for browsers other than Internet Explorer and Edge.", "The browser crashed after accessing the website.", "Credential Manager stores only system passwords.", "The website placed a cookie prohibiting password storage."], "opts_ru": ["Веб-пароли в Диспетчере учетных данных Windows сохраняются только для браузеров Internet Explorer и Microsoft Edge.", "Браузер аварийно завершился после входа на сайт.", "Credential Manager хранит только системные пароли локальных папок.", "Сайт установил cookie, запрещающий хранение паролей."], "ans": [0], "exp": "Раздел Web Credentials в Диспетчере учетных данных Windows хранит пароли сайтов только из встроенных браузеров Microsoft (IE/Edge); Chrome хранит пароли в собственном менеджере."}, {"id": 71, "module": "M10–M11", "moduleNum": 11, "pool": "Final 10–14", "multi": true, "q_en": "A technician wants to create a local account that requires a password and configure a screensaver to lock the screen after a period of inactivity. Which two Windows Control Panel applets will the technician use? (Choose two.)", "q_ru": "Технику нужно создать локальную учетную запись с паролем и настроить экранную заставку с блокировкой при простое. Какие два апплета Панели управления Windows он использует? (Выберите два ответа.)", "opts_en": ["User Accounts", "Personalization", "Programs", "Hardware and Sound", "Ease of Access", "Network and Internet"], "opts_ru": ["Учетные записи пользователей (User Accounts)", "Персонализация (Personalization)", "Программы (Programs)", "Оборудование и звук (Hardware and Sound)", "Специальные возможности (Ease of Access)", "Сеть и Интернет (Network and Internet)"], "ans": [0, 1], "exp": "Учетные записи создаются в «User Accounts», а параметры экранной заставки и галочка «Начинать с экрана входа в систему» настраиваются в «Personalization»."}, {"id": 72, "module": "M10–M11", "moduleNum": 11, "pool": "Final 10–14", "multi": false, "q_en": "A customer installed a new device driver three weeks ago; however, this driver causes the system to freeze occasionally and the customer wants to revert to the old driver without losing data or applications. Which option should be used?", "q_ru": "Клиент три недели назад установил новый драйвер устройства, после чего система начала периодически зависать. Как вернуться к старому драйверу без потери данных и программ?", "opts_en": ["Use Roll Back Driver in Device Manager (or Uninstall and reinstall the driver in Device Manager).", "Reset this PC.", "Use Advanced Start-up.", "Restore using Sysprep."], "opts_ru": ["Откатить или переустановить драйвер устройства через Диспетчер устройств (Device Manager).", "Вернуть компьютер в исходное состояние (Reset this PC).", "Использовать особые варианты загрузки (Advanced Start-up).", "Выполнить восстановление через Sysprep."], "ans": [0], "exp": "В Диспетчере устройств (Device Manager) можно выполнить откат драйвера (Roll Back Driver) или удалить проблемный драйвер и установить стабильную версию без затрагивания файлов пользователя."}, {"id": 73, "module": "M10–M11", "moduleNum": 11, "pool": "Final 10–14", "multi": false, "q_en": "A user wants to display and modify information about computer users from the command prompt. Which administrative CLI command can be used?", "q_ru": "Пользователь хочет просмотреть и изменить параметры учетных записей пользователей из командной строки. Какая команда используется для этого?", "opts_en": ["net user", "diskpart", "mstsc", "chkdsk"], "opts_ru": ["net user", "diskpart", "mstsc", "chkdsk"], "ans": [0], "exp": "Команда net user позволяет просматривать список учетных записей, добавлять новых пользователей и менять им пароли."}, {"id": 74, "module": "M10–M11", "moduleNum": 11, "pool": "Final 10–14", "multi": false, "q_en": "A user wants to display the contents of a text file in a Windows command interpreter. Which CLI command can be used?", "q_ru": "Какая команда командной строки Windows выводит текстовое содержимое файла прямо в окно консоли?", "opts_en": ["type", "net user", "chkdsk", "robocopy"], "opts_ru": ["type", "net user", "chkdsk", "robocopy"], "ans": [0], "exp": "Команда type (аналог cat в Linux) выводит содержимое текстового файла в консоль Windows."}, {"id": 75, "module": "M10–M11", "moduleNum": 11, "pool": "Final 10–14", "multi": false, "q_en": "A technician wants to copy files and entire directory trees from one volume to another on a Windows 10 PC via the command line. Which command can be used?", "q_ru": "Технику необходимо скопировать файлы и целые деревья каталогов с одного тома на другой в Windows 10 через командную строку. Какая утилита подойдет?", "opts_en": ["robocopy", "type", "net user", "chkdsk"], "opts_ru": ["robocopy (Robust File Copy)", "type", "net user", "chkdsk"], "ans": [0], "exp": "Утилита robocopy (Robust File Copy) предназначена для надежного копирования файлов и полных деревьев папок с сохранением атрибутов и прав NTFS."}, {"id": 76, "module": "M10–M11", "moduleNum": 11, "pool": "Final 10–14", "multi": false, "q_en": "A technician has just configured the security policy on a Windows 10 PC and wants to ensure the policy is implemented immediately. Which administrative command-line tool can be used?", "q_ru": "Техник изменил групповую политику безопасности на ПК с Windows 10 и хочет принудительно применить ее немедленно. Какая команда используется для этого?", "opts_en": ["gpupdate", "diskpart", "chkdsk", "mstsc"], "opts_ru": ["gpupdate (gpupdate /force)", "diskpart", "chkdsk", "mstsc"], "ans": [0], "exp": "Команда gpupdate (или gpupdate /force) немедленно обновляет и применяет измененные параметры групповой политики (Group Policy)."}, {"id": 77, "module": "M10–M11", "moduleNum": 11, "pool": "Final 10–14", "multi": false, "q_en": "A user wants to terminate a running process on a Windows computer from the command line. Which command should be used?", "q_ru": "Какая команда командной строки Windows используется для принудительного завершения запущенного процесса?", "opts_en": ["taskkill", "robocopy", "type", "chkdsk"], "opts_ru": ["taskkill", "robocopy", "type", "chkdsk"], "ans": [0], "exp": "Команда taskkill завершает один или несколько процессов по идентификатору процесса (PID) или имени образа."}, {"id": 78, "module": "M10–M11", "moduleNum": 11, "pool": "Final 10–14", "multi": false, "q_en": "What service does the administrative share PRINT$ provide in Windows?", "q_ru": "Какую функцию выполняет административный сетевой ресурс PRINT$ в Windows?", "opts_en": ["It provides printer drivers for printer administrators and clients connecting over the network.", "It provides a public folder for scanned documents.", "It stores the Windows swap file for print spooling.", "It encrypts network print jobs using IPsec."], "opts_ru": ["Предоставляет сетевую папку с драйверами принтеров для клиентов и администраторов.", "Предоставляет общую папку для отсканированных изображений.", "Хранит файл подкачки Windows.", "Шифрует задания печати по протоколу IPsec."], "ans": [0], "exp": "Скрытая административная шара PRINT$ используется Windows для автоматической раздачи драйверов общих сетевых принтерам клиентам."}, {"id": 79, "module": "M12", "moduleNum": 12, "pool": "Final 10–14", "multi": false, "q_en": "What is the purpose of executing applications for mobile devices in a sandbox?", "q_ru": "С какой целью мобильные приложения выполняются в изолированной среде («песочнице» / sandbox)?", "opts_en": ["to prevent malware from infecting the device and accessing other resources", "to allow the phone to run multiple operating systems", "to enable the display of separate application icons on the home screen", "to bypass carrier restrictions that prevent access to unauthorized apps"], "opts_ru": ["Чтобы предотвратить заражение устройства вредоносным ПО и изолировать приложение от данных других программ", "Чтобы запускать несколько операционных систем одновременно", "Чтобы отображать отдельные иконки на домашнем экране", "Чтобы обходить ограничения сотового оператора"], "ans": [0], "exp": "Песочница (sandbox) в iOS и Android изолирует каждое приложение от системных файлов и других программ, препятствуя распространению вредоносного кода."}, {"id": 80, "module": "M12", "moduleNum": 12, "pool": "Final 10–14", "multi": false, "q_en": "A user calls the help desk reporting that a laptop with Linux freezes on startup and displays 'kernel panic'. What could cause this problem?", "q_ru": "Пользователь сообщает, что ноутбук с ОС Linux зависает при запуске и выводит сообщение «kernel panic». Что может быть причиной этой ошибки?", "opts_en": ["A driver has become corrupted (or critical hardware/kernel module failed).", "GRUB or LILO has been deleted.", "GRUB or LILO has been corrupted.", "An application is using a resource that has become unavailable."], "opts_ru": ["Был поврежден критический драйвер устройства (или произошел сбой модуля ядра/оборудования).", "Загрузчик GRUB или LILO был удален (тогда ядро вообще не загрузится).", "Загрузчик GRUB или LILO был поврежден.", "Обычное пользовательское приложение заняло недоступный ресурс."], "ans": [0], "exp": "Kernel panic возникает уже после того, как загрузчик (GRUB/LILO) передал управление ядру Linux, когда ядро сталкивается с критической ошибкой драйвера или оборудования."}, {"id": 81, "module": "M12", "moduleNum": 12, "pool": "Final 10–14", "multi": true, "q_en": "What are two potential security risks that could result from rooting or jailbreaking a mobile device? (Choose two.)", "q_ru": "Какие два потенциальных риска безопасности возникают при выполнении рутинга (rooting) или джейлбрейка (jailbreaking) мобильного устройства? (Выберите два ответа.)", "opts_en": ["not creating or managing sandboxing features properly", "enabling application access to the root directory", "improving device performance", "allowing extensive customization of the UI", "activating features disabled by the carrier"], "opts_ru": ["Нарушение работы механизмов изоляции «песочницы» (sandboxing)", "Предоставление приложениям полного доступа к корневому каталогу (root directory)", "Повышение быстродействия устройства", "Расширенная кастомизация интерфейса", "Разблокировка функций оператора связи"], "ans": [0, 1], "exp": "Rooting/Jailbreaking открывает приложениям прямой доступ к корневой файловой системе (root directory) и ломает защиту песочницы (sandboxing)."}, {"id": 82, "module": "M12", "moduleNum": 12, "pool": "Final 10–14", "multi": true, "q_en": "What are two tasks to be performed regularly to preserve the security and integrity of data and applications on mobile devices? (Choose two.)", "q_ru": "Какие две задачи следует регулярно выполнять для сохранения безопасности и целостности данных и приложений на мобильных устройствах? (Выберите два ответа.)", "opts_en": ["Ensure that operating system software and applications contain the latest updates.", "Back up user data on a regular basis.", "Use airplane mode when accessing the Internet on an open Wi-Fi network.", "Unmount all unused disk partitions.", "Perform a factory reset once a month."], "opts_ru": ["Своевременно устанавливать последние обновления ОС и приложений.", "Регулярно выполнять резервное копирование пользовательских данных.", "Включать авиарежим при работе в открытом Wi-Fi.", "Размонтировать неиспользуемые разделы диска.", "Выполнять сброс до заводских настроек каждый месяц."], "ans": [0, 1], "exp": "Регулярное резервное копирование (backup) и установка актуальных патчей/обновлений ОС и приложений — основа защиты мобильного устройства."}, {"id": 83, "module": "M12", "moduleNum": 12, "pool": "Final 10–14", "multi": true, "q_en": "A user notices that a mobile device battery drains faster than usual. What are three causes of rapid battery discharge? (Choose three.)", "q_ru": "Пользователь заметил, что батарея смартфона разряжается быстрее обычного. Какие три причины могут вызывать быстрый разряд? (Выберите три ответа.)", "opts_en": ["The screen is set to a high brightness level.", "An application is using too many resources.", "The device is roaming between cell towers.", "Airplane mode is activated.", "The device connects via a VPN.", "An application is incompatible with the device."], "opts_ru": ["Экран настроен на максимальный уровень яркости.", "Фоновое приложение потребляет слишком много системных ресурсов.", "Устройство находится в роуминге и постоянно ищет вышки сотовой связи.", "Включен режим полета (Airplane mode).", "Устройство подключено через VPN.", "Приложение несовместимо с архитектурой."], "ans": [0, 1, 2], "exp": "Высокая яркость дисплея, ресурсоемкие приложения в фоне и постоянный поиск вышек связи (роуминг/слабый сигнал) сильнее всего расходуют заряд батареи."}, {"id": 84, "module": "M12", "moduleNum": 12, "pool": "Final 10–14", "multi": true, "q_en": "What are two operations that can help prevent a mobile device from being tracked without permission? (Choose two.)", "q_ru": "Какие две меры помогут предотвратить отслеживание местоположения мобильного устройства без разрешения пользователя? (Выберите два ответа.)", "opts_en": ["Turn off the GPS when it is not in use.", "Disable or remove applications that use or allow connections to GPS.", "Configure the device to connect only to known Wi-Fi networks.", "Use a VPN connection whenever possible.", "Configure the device not to store login credentials."], "opts_ru": ["Отключать модуль геолокации (GPS), когда он не используется.", "Отключить или удалить приложения, использующие доступ к GPS.", "Подключаться только к известным сетям Wi-Fi.", "Использовать VPN-соединение.", "Запретить браузеру сохранять пароли."], "ans": [0, 1], "exp": "Отключение службы геолокации (GPS) и отзыв прав доступа к местоположению у приложений предотвращают несанкционированное отслеживание координат."}, {"id": 85, "module": "M12", "moduleNum": 12, "pool": "Final 10–14", "multi": false, "q_en": "Which component consumes the most amount of power on most mobile devices?", "q_ru": "Какой компонент потребляет больше всего энергии на большинстве мобильных устройств?", "opts_en": ["LCD screen (display)", "camera", "CPU", "media player"], "opts_ru": ["Экран / дисплей (LCD screen)", "Камера", "Процессор (CPU)", "Медиаплеер"], "ans": [0], "exp": "Подсветка и матрица дисплея (LCD/OLED screen) являются главным потребителем заряда аккумулятора мобильного устройства."}, {"id": 86, "module": "M12", "moduleNum": 12, "pool": "Final 10–14", "multi": false, "q_en": "What tool is included in macOS for backing up disks to image files and restoring disk images?", "q_ru": "Какая встроенная утилита в macOS используется для создания дисковых образов и восстановления дисков из образа?", "opts_en": ["Disk Utility", "System Restore", "Deja Dup", "chkdsk"], "opts_ru": ["Дисковая утилита (Disk Utility)", "Восстановление системы (System Restore — это в Windows)", "Deja Dup (это в Linux Ubuntu)", "chkdsk (это в Windows)"], "ans": [0], "exp": "В macOS для работы с разделами, проверки дисков и создания/восстановления образов .dmg используется Disk Utility (а также Time Machine для регулярных бэкапов)."}, {"id": 87, "module": "M12", "moduleNum": 12, "pool": "Final 10–14", "multi": false, "q_en": "A corporate office is considering using an MDM (Mobile Device Management) policy to enhance its security parameters. What is achieved through the implementation of the MDM policy?", "q_ru": "Компания внедряет политику управления мобильными устройствами (MDM). Что достигается за счет использования MDM?", "opts_en": ["Sets policies for the applications that are allowed on a device (and manages security settings centrally).", "Blocks and tracks all incoming TCP connections on core routers.", "Replaces the need for wireless encryption protocols like WPA2.", "Upgrades 32-bit mobile operating systems to 64-bit."], "opts_ru": ["Задает политики разрешенных приложений на устройстве и централизованно управляет параметрами безопасности.", "Блокирует все входящие TCP-соединения на магистральных маршрутизаторах.", "Заменяет протоколы шифрования Wi-Fi (WPA2/WPA3).", "Обновляет 32-битные мобильные ОС до 64-битных."], "ans": [0], "exp": "Системы MDM позволяют ИТ-отделу централизованно настраивать пин-коды, шифрование, список разрешенных корпоративных приложений и удаленную очистку (remote wipe) для устройств сотрудников."}, {"id": 88, "module": "M13", "moduleNum": 13, "pool": "Final 10–14", "multi": false, "q_en": "Which software tool built into Windows protects against viruses and spyware on a Windows PC?", "q_ru": "Какое встроенное средство в ОС Windows защищает компьютер от вирусов и шпионского ПО (spyware)?", "opts_en": ["Windows Defender (Microsoft Defender Antivirus)", "Action Center", "Scandisk", "System File Checker (sfc)"], "opts_ru": ["Защитник Windows (Windows Defender)", "Центр поддержки (Action Center)", "Scandisk", "Средство проверки системных файлов (SFC)"], "ans": [0], "exp": "Windows Defender — встроенный антивирусный и антишпионский пакет в Windows 8/10/11."}, {"id": 89, "module": "M13", "moduleNum": 13, "pool": "Final 10–14", "multi": false, "q_en": "What wireless security mode based on open standards supports the highest level of security among WEP, WPA, WPA2, and LEAP?", "q_ru": "Какой режим безопасности беспроводной сети на базе открытых стандартов обеспечивает наивысший уровень защиты среди перечисленных (WEP, WPA, WPA2, LEAP)?", "opts_en": ["WPA2", "WEP", "WPA", "LEAP"], "opts_ru": ["WPA2 (использует стойкое шифрование AES/CCMP)", "WEP", "WPA", "LEAP"], "ans": [0], "exp": "Среди классических вариантов в вопросе NetAcad стандарт WPA2 (с алгоритмом шифрования AES) обеспечивает наивысшую безопасность (в современных сетях также WPA3)."}, {"id": 90, "module": "M13", "moduleNum": 13, "pool": "Final 10–14", "multi": false, "q_en": "True or False? An intrusion detection system (IDS) operates inline and has the ability to automatically drop/eliminate malicious traffic.", "q_ru": "Верно или неверно? Система обнаружения вторжений (IDS) работает непосредственно в разрыве канала (inline) и автоматически блокирует вредоносный трафик.", "opts_en": ["False", "True"], "opts_ru": ["Неверно (False — это делает IPS, а IDS работает пассивно)", "Верно (True)"], "ans": [0], "exp": "IDS (Intrusion Detection System) только анализирует копию трафика и отправляет оповещения, тогда как блокировать трафик в реальном времени (inline) способна система предотвращения вторжений — IPS (Intrusion Prevention System)."}, {"id": 91, "module": "M13", "moduleNum": 13, "pool": "Final 10–14", "multi": false, "q_en": "What type of security attack is launched when a hacker calls a company to obtain login information for a computer and claims to be an employee?", "q_ru": "Какой тип атаки совершается, когда злоумышленник звонит в компанию, представляется сотрудником и выманивает учетные данные для входа?", "opts_en": ["Social engineering (pretexting / vishing)", "Spyware", "Adware", "Trojan"], "opts_ru": ["Социальная инженерия (Social engineering)", "Шпионское ПО (Spyware)", "Рекламное ПО (Adware)", "Троянская программа (Trojan)"], "ans": [0], "exp": "Манипуляция людьми с целью выманивания конфиденциальных данных или паролей по телефону называется социальной инженерией (Social engineering)."}, {"id": 92, "module": "M13", "moduleNum": 13, "pool": "Final 10–14", "multi": false, "q_en": "After logging in to a computer, a user can view files in a shared folder, but cannot download or execute them. What action can the administrator take to allow the user to download/run the files while preventing their deletion?", "q_ru": "Пользователь видит список файлов в папке, но не может их открыть или скачать. Какие права доступа должен назначить администратор, чтобы разрешить чтение и запуск файлов, но запретить их удаление?", "opts_en": ["Set file permissions to Read and Execute.", "Set folder permissions to Read only.", "Set file permissions to Modify.", "Set file permissions to Full Control."], "opts_ru": ["Установить разрешения для файлов на «Чтение и выполнение» (Read and Execute).", "Установить разрешения только на просмотр папки.", "Установить разрешения на «Изменение» (Modify — позволяет удалять файлы!).", "Установить «Полный доступ» (Full Control)."], "ans": [0], "exp": "Права «Read and Execute» позволяют просматривать, скачивать и запускать файлы, тогда как «Modify» и «Full Control» дают право удалять файлы."}, {"id": 93, "module": "M13", "moduleNum": 13, "pool": "Final 10–14", "multi": false, "q_en": "Employees go for lunch and leave their computers unlocked and logged into their accounts. Which Windows feature should a technician configure to mitigate this risk?", "q_ru": "Сотрудники уходят на обед, оставляя компьютеры разблокированными. Какую функцию Windows должен настроить техник для устранения этой угрозы?", "opts_en": ["Inactivity timeout and screen lock", "BIOS/UEFI boot password", "Windows Firewall", "BitLocker Drive Encryption"], "opts_ru": ["Тайм-аут неактивности и автоматическая блокировка экрана (Inactivity timeout and screen lock)", "Пароль на загрузку в BIOS/UEFI", "Брандмауэр Windows", "Шифрование диска BitLocker"], "ans": [0], "exp": "Автоматическая блокировка экрана по таймеру простоя (Screen Saver password / Inactivity timeout) защищает оставленный без присмотра сеанс пользователя."}, {"id": 94, "module": "M13", "moduleNum": 13, "pool": "Final 10–14", "multi": true, "q_en": "A company security policy allows reusing wiped drives in other computers. What are two methods that can be used to properly erase data from magnetic hard drives so it cannot be recovered? (Choose two.)", "q_ru": "Политика безопасности компании разрешает повторное использование очищенных дисков или их утилизацию. Какие два метода гарантированно уничтожают данные на магнитных жестких дисках? (Выберите два ответа.)", "opts_en": ["Degaussing equipment (demagnetization)", "Data wiping / erasure software", "EFS Encryption", "Quick format in Disk Management", "Biometric scanner"], "opts_ru": ["Оборудование для размагничивания (Degaussing / demagnetization equipment)", "Специальное ПО для многократной перезаписи данных (Data erasure / wiping software)", "Шифрование EFS", "Быстрое форматирование", "Биометрический сканер"], "ans": [0, 1], "exp": "ПО для затирания данных (Data wiping software) перезаписывает сектора нулями/случайными числами (пригодно для повторного использования диска), а дегауссер (размагничиватель) полностью разрушает магнитные домены."}, {"id": 95, "module": "M13", "moduleNum": 13, "pool": "Final 10–14", "multi": false, "q_en": "What is a recommended best practice for a technician who must perform tasks that require administrative access?", "q_ru": "Какова рекомендуемая практика безопасности для системного администратора или техника, которому нужно выполнять задачи, требующие прав администратора?", "opts_en": ["Use a standard account with limited permissions, then use the 'Run as Administrator' option to perform the task that requires elevated privileges.", "Always stay logged in as the built-in Domain Administrator for all daily tasks.", "Disable User Account Control (UAC) permanently.", "Disable the network card before logging in as administrator."], "opts_ru": ["Работать под стандартной учетной записью с ограниченными правами и использовать «Запуск от имени администратора» (Run as Administrator) только для конкретной задачи.", "Постоянно работать под встроенной учетной записью Администратора.", "Навсегда отключить контроль учетных записей (UAC).", "Отключать сетевую карту перед каждым входом."], "ans": [0], "exp": "Принцип минимальных привилегий (Least Privilege) требует повседневной работы под обычной учетной записью с повышением прав через «Run as Administrator» только при необходимости."}, {"id": 96, "module": "M13", "moduleNum": 13, "pool": "Final 10–14", "multi": false, "q_en": "When a security audit is conducted in a company, the auditor reports that users who changed job positions retained their previous access permissions in addition to new ones. What security principle is being violated?", "q_ru": "Аудит безопасности выявил, что сотрудники при переводе на другие должности сохраняли свои старые права доступа в дополнение к новым (privilege creep). Какой принцип безопасности нарушен?", "opts_en": ["least privilege", "password complexity", "mutual authentication", "non-repudiation"], "opts_ru": ["Принцип минимальных привилегий (least privilege)", "Сложность паролей", "Взаимная аутентификация", "Неотказуемость (non-repudiation)"], "ans": [0], "exp": "Принцип минимальных привилегий (Least Privilege) гласит, что пользователь должен иметь доступ только к тем ресурсам, которые необходимы для выполнения его текущих должностных обязанностей."}, {"id": 97, "module": "M14", "moduleNum": 14, "pool": "Final 10–14", "multi": false, "q_en": "When troubleshooting a software issue, a Level 1 technician needs to send a log/configuration file containing passwords to a Level 2 technician. How should the Level 1 technician deliver this file?", "q_ru": "При диагностике ПО техник 1-го уровня должен передать конфигурационный файл с паролями технику 2-го уровня. Как следует передать этот файл?", "opts_en": ["Replace all passwords in the file with <password omitted> before sending via email, then provide passwords by secure means if necessary.", "Send the file as is to the Level 2 technician via plain email.", "This file must never be shared with a Level 2 technician.", "Post the file in the public company chat room."], "opts_ru": ["Заменить все пароли в файле на пометку <password omitted> перед отправкой по почте, а при необходимости передать пароль по защищенному каналу.", "Отправить файл с открытыми паролями обычным письмом.", "Ни при каких обстоятельствах не передавать файл технику 2-го уровня.", "Опубликовать файл в общем рабочем чате."], "ans": [0], "exp": "Конфиденциальные данные клиентов (пароли) необходимо удалять/маскировать (<password omitted>) в тикетах и логах перед пересылкой по электронной почте."}, {"id": 98, "module": "M14", "moduleNum": 14, "pool": "Final 10–14", "multi": false, "q_en": "What determines the level of support that a call center technician will provide to an individual customer?", "q_ru": "Что определяет уровень поддержки и время реакции, которые техник колл-центра обязан предоставить конкретному клиенту?", "opts_en": ["The support is based on that customer's SLA (Service Level Agreement) contract.", "All customers receive the exact same level of support regardless of contract.", "An individual technician chooses the support level based on personal free time.", "A Level 1 technician always provides higher support than a Level 2 technician."], "opts_ru": ["Уровень поддержки определяется соглашением об уровне обслуживания (SLA — Service Level Agreement) данного клиента.", "Все клиенты получают абсолютно одинаковый уровень поддержки независимо от договора.", "Техник сам выбирает уровень поддержки в зависимости от свободного времени.", "Техник 1-го уровня оказывает более глубокую техническую поддержку, чем 2-го."], "ans": [0], "exp": "Соглашение об уровне обслуживания (SLA) — юридический договор, определяющий гарантированное время отклика, приоритет и объем технической поддержки клиента."}, {"id": 99, "module": "M14", "moduleNum": 14, "pool": "Final 10–14", "multi": false, "q_en": "During a computer forensics investigation, what is required to prove the integrity and tracking of collected evidence (chain of custody)?", "q_ru": "Что требуется в ходе компьютерно-технической экспертизы (forensics) для подтверждения сохранности и отслеживания пути улик (chain of custody)?", "opts_en": ["proper documentation procedures", "a confession of guilt", "modifying timestamps on the target drive", "rebooting the suspect's system immediately"], "opts_ru": ["Надлежащие процедуры документирования (кто, когда, где и с какой целью прикасался к уликам)", "Признание вины подозреваемым", "Изменение временных меток на исследуемом диске", "Немедленная перезагрузка компьютера подозреваемого"], "ans": [0], "exp": "Цепочка сохранности улик (Chain of Custody) обеспечивается строгим документированием каждого этапа сбора, передачи и хранения доказательств."}, {"id": 100, "module": "M14", "moduleNum": 14, "pool": "Final 10–14", "multi": true, "q_en": "What are two storage locations that contain persistent (non-volatile) data that can be preserved when power is turned off during computer forensics? (Choose two.)", "q_ru": "Какие два типа накопителей хранят постоянные (энергонезависимые / persistent) данные, которые сохраняются после выключения питания при криминалистическом анализе? (Выберите два ответа.)", "opts_en": ["hard disk drives (HDD)", "solid-state drives (SSD)", "RAM", "CPU registers", "L1/L2 cache"], "opts_ru": ["Жесткие диски (Hard disk drives — HDD)", "Твердотельные накопители (Solid-state drives — SSD)", "Оперативная память (RAM — энергозависимая!)", "Регистры процессора (CPU registers — энергозависимые!)", "Кэш-память процессора (cache — энергозависимая!)"], "ans": [0, 1], "exp": "Постоянные данные (persistent data) хранятся на энергонезависимых носителях (HDD, SSD, флеш-накопителях), а данные в RAM, кэше и регистрах CPU являются летучими (volatile) и исчезают при отключении питания."}];
+
+    // App State
+    let langMode = 'both'; // 'both' | 'en' | 'ru'
+    let bankDisplayMode = 'show'; // 'show' | 'interactive'
+    let userState = {
+      mastered: {},
+      bookmarked: {},
+      mistakes: {},
+      bankSelections: {},
+      bankChecked: {}
+    };
+
+    // Exam Simulator State
+    let examState = {
+      active: false,
+      modeName: '',
+      questions: [],
+      currentIndex: 0,
+      selections: {}, // { qId: [indices] }
+      submitted: {},  // { qId: true }
+      timerSec: 4500,
+      timerHandle: null
+    };
+
+    // Flashcards State
+    let fcState = {
+      list: [...QUESTIONS],
+      index: 0,
+      flipped: false
+    };
+
+    function loadStorage() {
+      try {
+        const saved = localStorage.getItem('ite8_prep_state_v1');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          userState.mastered = parsed.mastered || {};
+          userState.bookmarked = parsed.bookmarked || {};
+          userState.mistakes = parsed.mistakes || {};
+        }
+      } catch (e) {}
+      updateHeaderCounts();
+    }
+
+    function saveStorage() {
+      try {
+        localStorage.setItem('ite8_prep_state_v1', JSON.stringify({
+          mastered: userState.mastered,
+          bookmarked: userState.bookmarked,
+          mistakes: userState.mistakes
+        }));
+      } catch (e) {}
+      updateHeaderCounts();
+    }
+
+    function updateHeaderCounts() {
+      const mCount = Object.keys(userState.mastered).filter(k => userState.mastered[k]).length;
+      const bCount = Object.keys(userState.bookmarked).filter(k => userState.bookmarked[k]).length;
+      const mEl = document.getElementById('headerMasteredCount');
+      const bEl = document.getElementById('headerBookmarkedCount');
+      if (mEl) mEl.textContent = mCount + ' / ' + QUESTIONS.length;
+      if (bEl) bEl.textContent = String(bCount);
+    }
+
+    function setLangMode(mode) {
+      langMode = mode;
+      const btns = {
+        both: document.getElementById('langBtnBilingual'),
+        en: document.getElementById('langBtnEn'),
+        ru: document.getElementById('langBtnRu')
+      };
+      Object.keys(btns).forEach(k => {
+        if (!btns[k]) return;
+        if (k === mode) {
+          btns[k].className = 'px-2.5 py-1 rounded-md bg-cyan-600 text-white transition';
+        } else {
+          btns[k].className = 'px-2.5 py-1 rounded-md text-slate-300 hover:text-white transition';
+        }
+      });
+      renderBank();
+      if (examState.active) renderExamRunnerQuestion();
+      renderFlashcard();
+    }
+
+    function switchTab(tab) {
+      const tabs = ['bank', 'exam', 'flashcards', 'cheatsheet'];
+      const views = {
+        bank: document.getElementById('viewBank'),
+        exam: document.getElementById('viewExam'),
+        flashcards: document.getElementById('viewFlashcards'),
+        cheatsheet: document.getElementById('viewCheatsheet')
+      };
+      const btns = {
+        bank: document.getElementById('tabBtnBank'),
+        exam: document.getElementById('tabBtnExam'),
+        flashcards: document.getElementById('tabBtnFlashcards'),
+        cheatsheet: document.getElementById('tabBtnCheatsheet')
+      };
+      tabs.forEach(t => {
+        if (views[t]) views[t].classList.toggle('hidden', t !== tab);
+        if (btns[t]) {
+          if (t === tab) {
+            btns[t].className = 'px-4 py-2.5 text-xs sm:text-sm font-semibold border-b-2 border-cyan-400 text-cyan-300 whitespace-nowrap flex items-center gap-2 transition';
+          } else {
+            btns[t].className = 'px-4 py-2.5 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap flex items-center gap-2 transition';
+          }
+        }
+      });
+      if (tab === 'bank') renderBank();
+      if (tab === 'flashcards') renderFlashcard();
+      if (tab === 'cheatsheet') renderAnalytics();
+    }
+
+    function setBankDisplayMode(mode) {
+      bankDisplayMode = mode;
+      const showBtn = document.getElementById('bankModeShowBtn');
+      const quizBtn = document.getElementById('bankModeQuizBtn');
+      if (mode === 'show') {
+        showBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white transition';
+        quizBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white border border-slate-700 transition';
+      } else {
+        quizBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyan-600 text-white transition';
+        showBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white border border-slate-700 transition';
+      }
+      renderBank();
+    }
+
+    function clearBankSearch() {
+      const inp = document.getElementById('bankSearchInput');
+      if (inp) inp.value = '';
+      document.getElementById('bankModuleFilter').value = 'ALL';
+      document.getElementById('bankPoolFilter').value = 'ALL';
+      document.getElementById('bankStatusFilter').value = 'ALL';
+      renderBank();
+    }
+
+    function toggleBookmark(qId) {
+      userState.bookmarked[qId] = !userState.bookmarked[qId];
+      saveStorage();
+      renderBank();
+    }
+
+    function toggleMastered(qId) {
+      userState.mastered[qId] = !userState.mastered[qId];
+      saveStorage();
+      renderBank();
+    }
+
+    function selectBankOption(qId, optIdx, isMulti) {
+      if (bankDisplayMode !== 'interactive') return;
+      if (!userState.bankSelections[qId]) userState.bankSelections[qId] = [];
+      const arr = userState.bankSelections[qId];
+      if (isMulti) {
+        const idx = arr.indexOf(optIdx);
+        if (idx >= 0) arr.splice(idx, 1);
+        else arr.push(optIdx);
+      } else {
+        userState.bankSelections[qId] = [optIdx];
+        userState.bankChecked[qId] = true;
+      }
+      renderBank();
+    }
+
+    function checkBankMultiQuestion(qId) {
+      userState.bankChecked[qId] = true;
+      renderBank();
+    }
+
+    function formatQuestionText(q) {
+      if (langMode === 'en') {
+        return '<div class="text-white">' + escapeHtml(q.q_en) + '</div>';
+      }
+      if (langMode === 'ru') {
+        return '<div class="text-white">' + escapeHtml(q.q_ru) + '</div>';
+      }
+      return '<div class="text-white">' + escapeHtml(q.q_en) + '</div>' +
+             '<div class="text-sm font-normal text-slate-400 mt-1">' + escapeHtml(q.q_ru) + '</div>';
+    }
+
+    function formatOptionText(q, idx) {
+      const en = q.opts_en[idx] || '';
+      const ru = q.opts_ru[idx] || '';
+      if (langMode === 'en') return '<span class="font-medium">' + escapeHtml(en) + '</span>';
+      if (langMode === 'ru') return '<span class="font-medium">' + escapeHtml(ru) + '</span>';
+      return '<div class="font-medium text-slate-100">' + escapeHtml(en) + '</div>' +
+             '<div class="text-xs text-slate-400 mt-0.5">' + escapeHtml(ru) + '</div>';
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function renderBank() {
+      const query = (document.getElementById('bankSearchInput')?.value || '').trim().toLowerCase();
+      const modFilter = document.getElementById('bankModuleFilter')?.value || 'ALL';
+      const poolFilter = document.getElementById('bankPoolFilter')?.value || 'ALL';
+      const statusFilter = document.getElementById('bankStatusFilter')?.value || 'ALL';
+
+      const filtered = QUESTIONS.filter(q => {
+        if (modFilter !== 'ALL' && q.module !== modFilter) return false;
+        if (poolFilter !== 'ALL' && q.pool !== poolFilter) return false;
+        if (statusFilter === 'BOOKMARKED' && !userState.bookmarked[q.id]) return false;
+        if (statusFilter === 'MASTERED' && !userState.mastered[q.id]) return false;
+        if (statusFilter === 'UNMASTERED' && userState.mastered[q.id]) return false;
+        if (statusFilter === 'MISTAKES' && !userState.mistakes[q.id]) return false;
+        if (statusFilter === 'MULTI' && !q.multi) return false;
+
+        if (query) {
+          const hay = (
+            q.q_en + ' ' + q.q_ru + ' ' +
+            q.opts_en.join(' ') + ' ' + q.opts_ru.join(' ') + ' ' +
+            q.exp + ' ' + q.module + ' ' + q.pool
+          ).toLowerCase();
+          if (!hay.includes(query)) return false;
+        }
+        return true;
+      });
+
+      const countEl = document.getElementById('bankResultCount');
+      if (countEl) countEl.textContent = String(filtered.length);
+
+      const container = document.getElementById('bankQuestionsContainer');
+      if (!container) return;
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center text-slate-400">По вашему запросу ничего не найдено. Попробуйте сбросить фильтры.</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(q => {
+        const isBookmarked = !!userState.bookmarked[q.id];
+        const isMastered = !!userState.mastered[q.id];
+        const selected = userState.bankSelections[q.id] || [];
+        const isChecked = bankDisplayMode === 'show' || !!userState.bankChecked[q.id];
+
+        const optsHtml = q.opts_en.map((_, idx) => {
+          const isCorrect = q.ans.includes(idx);
+          const isUserSelected = selected.includes(idx);
+
+          let cls = 'border-slate-800 bg-slate-950/70 text-slate-200 hover:border-slate-700';
+          let badge = '';
+
+          if (isChecked) {
+            if (isCorrect) {
+              cls = 'border-emerald-500/70 bg-emerald-500/10 text-emerald-100';
+              badge = '<span class="ml-auto px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/20 text-emerald-300 shrink-0">✓ Верно</span>';
+            } else if (isUserSelected && !isCorrect) {
+              cls = 'border-rose-500/70 bg-rose-500/10 text-rose-200';
+              badge = '<span class="ml-auto px-2 py-0.5 rounded text-xs font-bold bg-rose-500/20 text-rose-300 shrink-0">✕ Ошибка</span>';
+            }
+          } else if (isUserSelected) {
+            cls = 'border-cyan-500 bg-cyan-500/15 text-white';
+          }
+
+          const cursorCls = bankDisplayMode === 'interactive' ? 'cursor-pointer' : '';
+          return '<div onclick="selectBankOption(' + q.id + ', ' + idx + ', ' + q.multi + ')" class="flex items-start gap-3 p-3 rounded-xl border transition ' + cls + ' ' + cursorCls + '">' +
+            '<div class="mt-0.5 w-5 h-5 rounded flex items-center justify-center text-xs font-bold border border-slate-700 bg-slate-900 shrink-0">' +
+              String.fromCharCode(65 + idx) +
+            '</div>' +
+            '<div class="text-sm flex-1">' + formatOptionText(q, idx) + '</div>' +
+            badge +
+          '</div>';
+        }).join('');
+
+        const checkMultiBtn = (bankDisplayMode === 'interactive' && q.multi && !userState.bankChecked[q.id])
+          ? '<button onclick="checkBankMultiQuestion(' + q.id + ')" class="mt-3 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-xs font-bold text-white transition">Проверить выбранные ответы</button>'
+          : '';
+
+        const expHtml = isChecked
+          ? '<div class="mt-3 p-3.5 rounded-xl bg-slate-950/90 border border-slate-800 text-xs text-slate-300 leading-relaxed">' +
+              '<span class="font-bold text-cyan-400">💡 Пояснение: </span>' + escapeHtml(q.exp) +
+            '</div>'
+          : '';
+
+        return '<article class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-3">' +
+          '<div class="flex flex-wrap items-center justify-between gap-2">' +
+            '<div class="flex flex-wrap items-center gap-2">' +
+              '<span class="px-2.5 py-0.5 rounded-lg text-xs font-bold bg-slate-800 text-cyan-400 border border-slate-700">#' + q.id + '</span>' +
+              '<span class="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-blue-500/15 text-blue-300 border border-blue-500/30">Модуль ' + q.moduleNum + ' (' + q.module + ')</span>' +
+              '<span class="px-2.5 py-0.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-300">' + q.pool + '</span>' +
+              (q.multi ? '<span class="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30">Выберите ' + q.ans.length + ' ответа</span>' : '') +
+            '</div>' +
+            '<div class="flex items-center gap-1.5">' +
+              '<button onclick="toggleMastered(' + q.id + ')" class="px-2.5 py-1 rounded-lg text-xs font-semibold border transition ' + (isMastered ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white') + '">' +
+                (isMastered ? '✓ Изучено' : '○ Изучить') +
+              '</button>' +
+              '<button onclick="toggleBookmark(' + q.id + ')" class="px-2.5 py-1 rounded-lg text-xs font-semibold border transition ' + (isBookmarked ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white') + '">' +
+                (isBookmarked ? '★ Избранное' : '☆ В избранное') +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="text-sm sm:text-base font-semibold leading-snug pt-1">' + formatQuestionText(q) + '</div>' +
+          '<div class="space-y-2 pt-1">' + optsHtml + '</div>' +
+          checkMultiBtn +
+          expHtml +
+        '</article>';
+      }).join('');
+    }
+
+    // ==================== EXAM SIMULATOR FUNCTIONS ====================
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function startExamSession(mode) {
+      let pool = [];
+      let durationSec = 4500;
+      let title = 'Course Final Exam (Modules 1–14)';
+
+      if (mode === 'composite60') {
+        pool = shuffleArray(QUESTIONS).slice(0, 60);
+        durationSec = 75 * 60;
+        title = 'IT Essentials Course Final Exam (60 вопросов)';
+      } else if (mode === 'final1_9') {
+        const m1_9 = QUESTIONS.filter(q => q.moduleNum <= 9);
+        pool = shuffleArray(m1_9).slice(0, 50);
+        durationSec = 60 * 60;
+        title = 'Final Exam Modules 1–9';
+      } else if (mode === 'final10_14') {
+        const m10_14 = QUESTIONS.filter(q => q.moduleNum >= 10);
+        pool = shuffleArray(m10_14).slice(0, 45);
+        durationSec = 60 * 60;
+        title = 'Final Exam Modules 10–14';
+      } else if (mode === 'all100') {
+        pool = [...QUESTIONS];
+        durationSec = 120 * 60;
+        title = 'Полный марафон (100 вопросов)';
+      } else if (mode === 'sprint15') {
+        pool = shuffleArray(QUESTIONS).slice(0, 15);
+        durationSec = 20 * 60;
+        title = 'Быстрый спринт (15 вопросов)';
+      } else if (mode === 'mistakes') {
+        const custom = QUESTIONS.filter(q => userState.mistakes[q.id] || userState.bookmarked[q.id] || q.multi);
+        pool = custom.length > 0 ? shuffleArray(custom) : shuffleArray(QUESTIONS).slice(0, 20);
+        durationSec = 45 * 60;
+        title = 'Отработка ошибок, избранного и Multi-Select';
+      }
+
+      examState.active = true;
+      examState.modeName = title;
+      examState.questions = pool;
+      examState.currentIndex = 0;
+      examState.selections = {};
+      examState.submitted = {};
+      examState.timerSec = durationSec;
+
+      if (examState.timerHandle) clearInterval(examState.timerHandle);
+      examState.timerHandle = setInterval(() => {
+        if (examState.timerSec > 0) {
+          examState.timerSec--;
+          updateExamTimerUI();
+        } else {
+          finishExamSession();
+        }
+      }, 1000);
+
+      document.getElementById('examSetupPanel').classList.add('hidden');
+      document.getElementById('examResultPanel').classList.add('hidden');
+      document.getElementById('examActivePanel').classList.remove('hidden');
+
+      updateExamTimerUI();
+      renderExamRunnerQuestion();
+    }
+
+    function updateExamTimerUI() {
+      const m = Math.floor(examState.timerSec / 60);
+      const s = examState.timerSec % 60;
+      const el = document.getElementById('examTimerDisplay');
+      if (el) el.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    }
+
+    function renderExamRunnerQuestion() {
+      const q = examState.questions[examState.currentIndex];
+      if (!q) return;
+
+      document.getElementById('examRunnerBadge').textContent = 'Вопрос ' + (examState.currentIndex + 1) + ' из ' + examState.questions.length;
+      document.getElementById('examRunnerModuleTag').textContent = 'Модуль ' + q.moduleNum + ' (' + q.module + ')';
+
+      const multiTag = document.getElementById('examRunnerMultiTag');
+      if (q.multi) {
+        multiTag.textContent = 'Выберите ' + q.ans.length + ' ответа';
+        multiTag.classList.remove('hidden');
+      } else {
+        multiTag.classList.add('hidden');
+      }
+
+      const bmBtn = document.getElementById('examBookmarkCurrentBtn');
+      if (userState.bookmarked[q.id]) {
+        bmBtn.textContent = '★ В избранном';
+        bmBtn.className = 'px-2.5 py-1.5 rounded-xl bg-amber-500/20 text-xs font-semibold text-amber-300 border border-amber-500/40 transition';
+      } else {
+        bmBtn.textContent = '☆ В избранное';
+        bmBtn.className = 'px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition';
+      }
+
+      document.getElementById('examQuestionStem').innerHTML = formatQuestionText(q);
+
+      const selected = examState.selections[q.id] || [];
+      const isSub = !!examState.submitted[q.id];
+      const showInstant = document.getElementById('examInstantFeedbackToggle')?.checked;
+
+      const optsContainer = document.getElementById('examOptionsList');
+      optsContainer.innerHTML = q.opts_en.map((_, idx) => {
+        const isSelected = selected.includes(idx);
+        const isCorrect = q.ans.includes(idx);
+
+        let cls = 'border-slate-800 bg-slate-950 hover:border-slate-700 text-slate-200';
+        if (isSub && showInstant) {
+          if (isCorrect) cls = 'border-emerald-500 bg-emerald-500/15 text-emerald-100';
+          else if (isSelected && !isCorrect) cls = 'border-rose-500 bg-rose-500/15 text-rose-200';
+        } else if (isSelected) {
+          cls = 'border-cyan-500 bg-cyan-500/15 text-white';
+        }
+
+        return '<div onclick="toggleExamOption(' + idx + ')" class="flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition ' + cls + '">' +
+          '<div class="mt-0.5 w-5 h-5 rounded flex items-center justify-center text-xs font-bold border border-slate-700 bg-slate-900 shrink-0">' +
+            (isSelected ? '✓' : String.fromCharCode(65 + idx)) +
+          '</div>' +
+          '<div class="text-sm flex-1">' + formatOptionText(q, idx) + '</div>' +
+        '</div>';
+      }).join('');
+
+      const fbBox = document.getElementById('examFeedbackBox');
+      if (isSub && showInstant) {
+        const isRight = arraysEqualAsSet(selected, q.ans);
+        fbBox.classList.remove('hidden');
+        if (isRight) {
+          fbBox.className = 'rounded-xl p-4 border border-emerald-500/50 bg-emerald-500/10 text-emerald-200 text-xs sm:text-sm space-y-1';
+          fbBox.innerHTML = '<div class="font-bold">✓ Правильный ответ!</div><div>' + escapeHtml(q.exp) + '</div>';
+        } else {
+          fbBox.className = 'rounded-xl p-4 border border-rose-500/50 bg-rose-500/10 text-rose-200 text-xs sm:text-sm space-y-1';
+          fbBox.innerHTML = '<div class="font-bold">✕ Неверно.</div><div>' + escapeHtml(q.exp) + '</div>';
+        }
+      } else {
+        fbBox.classList.add('hidden');
+      }
+
+      renderExamPalette();
+    }
+
+    function toggleExamOption(optIdx) {
+      const q = examState.questions[examState.currentIndex];
+      if (!q) return;
+      if (examState.submitted[q.id] && document.getElementById('examInstantFeedbackToggle')?.checked) return;
+
+      if (!examState.selections[q.id]) examState.selections[q.id] = [];
+      const arr = examState.selections[q.id];
+
+      if (q.multi) {
+        const pos = arr.indexOf(optIdx);
+        if (pos >= 0) arr.splice(pos, 1);
+        else arr.push(optIdx);
+      } else {
+        examState.selections[q.id] = [optIdx];
+      }
+      renderExamRunnerQuestion();
+    }
+
+    function submitCurrentExamQuestion() {
+      const q = examState.questions[examState.currentIndex];
+      if (!q) return;
+      const sel = examState.selections[q.id] || [];
+      if (sel.length === 0) return;
+
+      examState.submitted[q.id] = true;
+      const isRight = arraysEqualAsSet(sel, q.ans);
+      if (isRight) {
+        userState.mastered[q.id] = true;
+        delete userState.mistakes[q.id];
+      } else {
+        userState.mistakes[q.id] = true;
+      }
+      saveStorage();
+      renderExamRunnerQuestion();
+    }
+
+    function prevExamQuestion() {
+      if (examState.currentIndex > 0) {
+        examState.currentIndex--;
+        renderExamRunnerQuestion();
+      }
+    }
+
+    function nextExamQuestion() {
+      if (examState.currentIndex < examState.questions.length - 1) {
+        examState.currentIndex++;
+        renderExamRunnerQuestion();
+      }
+    }
+
+    function jumpToExamQuestion(idx) {
+      examState.currentIndex = idx;
+      renderExamRunnerQuestion();
+    }
+
+    function toggleBookmarkCurrentExamQ() {
+      const q = examState.questions[examState.currentIndex];
+      if (!q) return;
+      userState.bookmarked[q.id] = !userState.bookmarked[q.id];
+      saveStorage();
+      renderExamRunnerQuestion();
+    }
+
+    function renderExamPalette() {
+      const grid = document.getElementById('examPaletteGrid');
+      const showInstant = document.getElementById('examInstantFeedbackToggle')?.checked;
+      let answeredCount = 0;
+
+      grid.innerHTML = examState.questions.map((q, idx) => {
+        const sel = examState.selections[q.id] || [];
+        const isSub = !!examState.submitted[q.id];
+        if (sel.length > 0) answeredCount++;
+
+        let cls = 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-600';
+        if (idx === examState.currentIndex) {
+          cls = 'bg-cyan-600 text-white border-cyan-400 font-bold';
+        } else if (isSub && showInstant) {
+          const ok = arraysEqualAsSet(sel, q.ans);
+          cls = ok
+            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50'
+            : 'bg-rose-500/20 text-rose-300 border-rose-500/50';
+        } else if (sel.length > 0) {
+          cls = 'bg-blue-500/20 text-blue-300 border-blue-500/40';
+        }
+
+        return '<button onclick="jumpToExamQuestion(' + idx + ')" class="h-9 rounded-lg border text-xs transition ' + cls + '">' +
+          (idx + 1) +
+        '</button>';
+      }).join('');
+
+      document.getElementById('examAnsweredCounter').textContent = 'Отвечено: ' + answeredCount + ' / ' + examState.questions.length;
+    }
+
+    function arraysEqualAsSet(a, b) {
+      if (!a || !b || a.length !== b.length) return false;
+      const s1 = [...a].sort().join(',');
+      const s2 = [...b].sort().join(',');
+      return s1 === s2;
+    }
+
+    function finishExamSession() {
+      if (examState.timerHandle) {
+        clearInterval(examState.timerHandle);
+        examState.timerHandle = null;
+      }
+      examState.active = false;
+
+      let correctCount = 0;
+      const wrongList = [];
+
+      examState.questions.forEach(q => {
+        const sel = examState.selections[q.id] || [];
+        const ok = arraysEqualAsSet(sel, q.ans);
+        if (ok) {
+          correctCount++;
+          userState.mastered[q.id] = true;
+          delete userState.mistakes[q.id];
+        } else {
+          userState.mistakes[q.id] = true;
+          wrongList.push(q);
+        }
+      });
+      saveStorage();
+
+      const total = examState.questions.length || 1;
+      const pct = Math.round((correctCount / total) * 100);
+      const passed = pct >= 70;
+
+      document.getElementById('examActivePanel').classList.add('hidden');
+      document.getElementById('examResultPanel').classList.remove('hidden');
+
+      const badge = document.getElementById('examResultStatusBadge');
+      if (passed) {
+        badge.textContent = 'PASSED • ЭКЗАМЕН СДАН (ПРОХОДНОЙ 70%)';
+        badge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+      } else {
+        badge.textContent = 'NEEDS REVIEW • НЕ НАБРАН ПРОХОДНОЙ БАЛЛ 70%';
+        badge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30';
+      }
+
+      document.getElementById('examResultTitle').textContent = 'Результат: ' + pct + '% (' + correctCount + ' из ' + total + ' верно)';
+      document.getElementById('examResultSubtitle').textContent = examState.modeName + ' • Неверных или пропущенных ответов: ' + wrongList.length;
+
+      const retryBtn = document.getElementById('examRetryWrongBtn');
+      if (wrongList.length > 0) {
+        retryBtn.classList.remove('hidden');
+      } else {
+        retryBtn.classList.add('hidden');
+      }
+
+      const revContainer = document.getElementById('examReviewContainer');
+      revContainer.innerHTML = examState.questions.map((q, idx) => {
+        const sel = examState.selections[q.id] || [];
+        const ok = arraysEqualAsSet(sel, q.ans);
+        const correctTexts = q.ans.map(i => q.opts_en[i] + ' (' + q.opts_ru[i] + ')').join('; ');
+        const userTexts = sel.length > 0 ? sel.map(i => q.opts_en[i]).join('; ') : 'Не выбран';
+
+        return '<div class="p-4 rounded-xl border ' + (ok ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-rose-500/40 bg-rose-500/10') + ' space-y-2">' +
+          '<div class="flex items-center justify-between text-xs">' +
+            '<span class="font-bold ' + (ok ? 'text-emerald-400' : 'text-rose-400') + '">' + (ok ? '✓ Вопрос ' + (idx + 1) + ' — Верно' : '✕ Вопрос ' + (idx + 1) + ' — Ошибка') + '</span>' +
+            '<span class="text-slate-400">Модуль ' + q.moduleNum + '</span>' +
+          '</div>' +
+          '<div class="text-sm font-semibold text-white">' + escapeHtml(q.q_en) + '</div>' +
+          '<div class="text-xs text-slate-400">' + escapeHtml(q.q_ru) + '</div>' +
+          (!ok ? '<div class="text-xs text-rose-300"><strong>Ваш ответ:</strong> ' + escapeHtml(userTexts) + '</div>' : '') +
+          '<div class="text-xs text-emerald-300"><strong>Правильный ответ:</strong> ' + escapeHtml(correctTexts) + '</div>' +
+          '<div class="text-xs text-slate-300 pt-1"><strong>Пояснение:</strong> ' + escapeHtml(q.exp) + '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function retryWrongExamQuestions() {
+      const wrongQs = examState.questions.filter(q => !arraysEqualAsSet(examState.selections[q.id] || [], q.ans));
+      if (wrongQs.length === 0) return;
+
+      examState.active = true;
+      examState.modeName = 'Работа над ошибками (' + wrongQs.length + ' вопр.)';
+      examState.questions = wrongQs;
+      examState.currentIndex = 0;
+      examState.selections = {};
+      examState.submitted = {};
+      examState.timerSec = wrongQs.length * 90;
+
+      document.getElementById('examResultPanel').classList.add('hidden');
+      document.getElementById('examActivePanel').classList.remove('hidden');
+      renderExamRunnerQuestion();
+    }
+
+    function quitExamToSetup() {
+      if (examState.timerHandle) {
+        clearInterval(examState.timerHandle);
+        examState.timerHandle = null;
+      }
+      examState.active = false;
+      document.getElementById('examActivePanel').classList.add('hidden');
+      document.getElementById('examResultPanel').classList.add('hidden');
+      document.getElementById('examSetupPanel').classList.remove('hidden');
+    }
+
+    // ==================== FLASHCARDS FUNCTIONS ====================
+    function filterFlashcards() {
+      const mod = document.getElementById('fcModuleFilter')?.value || 'ALL';
+      fcState.list = mod === 'ALL' ? [...QUESTIONS] : QUESTIONS.filter(q => q.module === mod);
+      fcState.index = 0;
+      fcState.flipped = false;
+      renderFlashcard();
+    }
+
+    function shuffleFlashcards() {
+      fcState.list = shuffleArray(fcState.list);
+      fcState.index = 0;
+      fcState.flipped = false;
+      renderFlashcard();
+    }
+
+    function flipCurrentCard() {
+      fcState.flipped = !fcState.flipped;
+      const inner = document.getElementById('fcInner');
+      if (inner) inner.classList.toggle('flipped', fcState.flipped);
+    }
+
+    function prevFlashcard() {
+      if (fcState.list.length === 0) return;
+      fcState.index = (fcState.index - 1 + fcState.list.length) % fcState.list.length;
+      fcState.flipped = false;
+      renderFlashcard();
+    }
+
+    function nextFlashcard() {
+      if (fcState.list.length === 0) return;
+      fcState.index = (fcState.index + 1) % fcState.list.length;
+      fcState.flipped = false;
+      renderFlashcard();
+    }
+
+    function markFlashcardMastered() {
+      const q = fcState.list[fcState.index];
+      if (!q) return;
+      userState.mastered[q.id] = true;
+      saveStorage();
+      nextFlashcard();
+    }
+
+    function renderFlashcard() {
+      const inner = document.getElementById('fcInner');
+      if (inner) inner.classList.toggle('flipped', fcState.flipped);
+
+      const q = fcState.list[fcState.index];
+      if (!q) return;
+
+      document.getElementById('fcCounterText').textContent = (fcState.index + 1) + ' / ' + fcState.list.length;
+      document.getElementById('fcFrontModule').textContent = 'Вопрос #' + q.id + ' • Модуль ' + q.moduleNum + ' (' + q.module + ')';
+
+      document.getElementById('fcFrontText').innerHTML =
+        '<div class="text-base sm:text-xl font-bold text-white">' + escapeHtml(q.q_en) + '</div>' +
+        '<div class="text-sm sm:text-base text-slate-300">' + escapeHtml(q.q_ru) + '</div>';
+
+      const ansHtml = q.ans.map(i =>
+        '<div class="p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-200 font-bold text-sm sm:text-base">' +
+          '<div>' + escapeHtml(q.opts_en[i]) + '</div>' +
+          '<div class="text-xs text-emerald-300 font-normal mt-0.5">' + escapeHtml(q.opts_ru[i]) + '</div>' +
+        '</div>'
+      ).join('');
+
+      document.getElementById('fcBackText').innerHTML = ansHtml;
+      document.getElementById('fcBackExp').textContent = '💡 ' + q.exp;
+    }
+
+    // ==================== ANALYTICS FUNCTIONS ====================
+    function renderAnalytics() {
+      const groups = [
+        { key: 'M1–M4', title: 'Модули 1–4: Железо ПК, BIOS, RAID, Сборка' },
+        { key: 'M5–M6', title: 'Модули 5–6: Сетевые концепции и IPv4/IPv6' },
+        { key: 'M7–M8', title: 'Модули 7–8: Ноутбуки и Лазерные/Струйные принтеры' },
+        { key: 'M9', title: 'Модуль 9: Виртуализация и Облачные вычисления' },
+        { key: 'M10–M11', title: 'Модули 10–11: Установка, настройка и CLI Windows' },
+        { key: 'M12', title: 'Модуль 12: Мобильные ОС, Linux и macOS' },
+        { key: 'M13', title: 'Модуль 13: Информационная безопасность (Security)' },
+        { key: 'M14', title: 'Модуль 14: ИТ-специалист, SLA и Этика' }
+      ];
+
+      const grid = document.getElementById('analyticsModuleGrid');
+      if (!grid) return;
+
+      grid.innerHTML = groups.map(g => {
+        const qs = QUESTIONS.filter(q => q.module === g.key);
+        const done = qs.filter(q => userState.mastered[q.id]).length;
+        const pct = qs.length > 0 ? Math.round((done / qs.length) * 100) : 0;
+
+        return '<div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2">' +
+          '<div class="flex items-center justify-between text-xs">' +
+            '<span class="font-bold text-cyan-400">' + g.key + '</span>' +
+            '<span class="font-bold text-white">' + done + ' / ' + qs.length + ' (' + pct + '%)</span>' +
+          '</div>' +
+          '<div class="text-xs font-medium text-slate-300 line-clamp-1">' + g.title + '</div>' +
+          '<div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">' +
+            '<div class="h-full bg-gradient-to-r from-cyan-500 to-emerald-500 transition-all" style="width:' + pct + '%"></div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function resetAllProgress() {
+      userState.mastered = {};
+      userState.bookmarked = {};
+      userState.mistakes = {};
+      userState.bankSelections = {};
+      userState.bankChecked = {};
+      saveStorage();
+      renderAnalytics();
+      renderBank();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadStorage();
+      renderBank();
+      renderFlashcard();
+      renderAnalytics();
+    });
+  </script>
+</body>
+</html>
